@@ -28,4 +28,7 @@ dist/
 
 # Logs
 *.log
-logs
+logs-e 
+# macOS artifacts
+._*
+._.git
