@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="SEKS Broker" description="SEKS Broker - Secure secret management for AI agents">
+  <section class="hero">
+    <div class="container">
+      <h1>SEKS Broker</h1>
+      <p>An added layer of protection between agents and secrets</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="article">
+        <h2>The Security Challenge</h2>
+        <p>
+          AI agents need API keys to be useful. But giving an agent direct access to credentials 
+          means those secrets live in the agent's memory, shell history, and logs—where they can 
+          be exfiltrated via prompt injection or accidental exposure.
+        </p>
+
+        <div class="notice notice-warning">
+          <strong>The Problem:</strong> Agents need credentials to work, but direct credential access is risky.
+          The SEKS Broker adds a layer of indirection and protection.
+        </div>
+
+        <h2>How It Works</h2>
+        <p>
+          The SEKS Broker sits between agents and external services. Agents authenticate with 
+          proxy tokens; the broker injects real credentials at request time.
+        </p>
+
+        <h3>Request Flow</h3>
+        <pre><code>Agent                    SEKS Broker                 External API
+  │                           │                           │
+  │  "Call GitHub API"        │                           │
+  │  Auth: seks_github_xxx    │                           │
+  │ ─────────────────────────►│                           │
+  │                           │                           │
+  │                           │  Fetch real credential    │
+  │                           │  from encrypted store     │
+  │                           │                           │
+  │                           │  GET /user                │
+  │                           │  Auth: Bearer ghp_xxx     │
+  │                           │ ─────────────────────────►│
+  │                           │                           │
+  │                           │◄───────────── Response ───│
+  │                           │                           │
+  │◄─── Scrubbed response ────│                           │
+  │                           │                           │</code></pre>
+
+        <h2>Current Features</h2>
+
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>🔐 Credential Isolation</h3>
+            <p>
+              Real API keys stay in the broker's encrypted store. Agents only see proxy tokens 
+              that have no value outside the broker.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🔄 Passthrough Proxy</h3>
+            <p>
+              Works with standard SDKs. Point your OpenAI/Anthropic/GitHub client at the broker 
+              URL and use proxy tokens instead of real keys.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🧹 Output Scrubbing</h3>
+            <p>
+              If a credential accidentally appears in a response, the broker redacts it before 
+              returning to the agent. Catches raw, base64, and hex encodings.
+            </p>
+          </div>
+          <div class="card">
+            <h3>📊 Access Logging</h3>
+            <p>
+              Every request through the broker is logged with timestamps. See which agents 
+              accessed which secrets and when.
+            </p>
+          </div>
+        </div>
+
+        <h2>Supported Providers</h2>
+        <p>
+          The broker can proxy requests to any REST API with header-based authentication. 
+          Currently supported:
+        </p>
+        <ul>
+          <li><strong>OpenAI</strong> — Chat completions, embeddings, etc.</li>
+          <li><strong>Anthropic</strong> — Claude API</li>
+          <li><strong>GitHub</strong> — REST API</li>
+          <li><strong>AWS S3</strong> — Object storage</li>
+          <li><strong>Brave Search</strong> — Web search API</li>
+          <li><strong>Cloudflare</strong> — Workers, D1, etc.</li>
+          <li><strong>Notion</strong> — Database API</li>
+          <li><strong>Gemini</strong> — Google AI</li>
+        </ul>
+
+        <h2>What This Doesn't Solve</h2>
+        <p>
+          The SEKS Broker adds protection, but it's not magic:
+        </p>
+        <ul>
+          <li>A compromised agent can still <em>use</em> credentials (make authorized requests)</li>
+          <li>Timing side-channels and exotic encodings might bypass scrubbing</li>
+          <li>The broker itself must be secured</li>
+        </ul>
+        <p>
+          Think of it as defense-in-depth: raising the bar for credential theft, not eliminating all risk.
+        </p>
+
+        <h2>Getting Started</h2>
+        <pre><code># Example: Using the broker with Python OpenAI SDK
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="seks_openai_xxx",  # Proxy token, not real key
+    base_url="https://your-broker.example.com/api/openai"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[{`{"role": "user", "content": "Hello!"}`}]
+)</code></pre>
+
+        <div class="cta-box">
+          <p>Questions or feedback? <a href="/feedback">Let us know!</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .cta-box {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--color-bg-secondary);
+      border-radius: 12px;
+      text-align: center;
+    }
+  </style>
+</BaseLayout>

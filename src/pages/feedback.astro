@@ -1,0 +1,245 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Feedback" description="Share your feedback on the Botsters project">
+  <section class="hero" style="padding-bottom: 2rem;">
+    <div class="container">
+      <h1>Feedback</h1>
+      <p>Help shape the future of Botsters</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="feedback-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="form-group">
+            <label for="name">Name (optional)</label>
+            <input type="text" id="name" name="name" placeholder="Your name" />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email (optional)</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="">Select a category...</option>
+              <option value="feature">Feature Request</option>
+              <option value="bug">Bug Report</option>
+              <option value="security">Security Concern</option>
+              <option value="question">Question</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="mailing_list" name="mailing_list" />
+              <span class="checkbox-text">Add me to the mailing list</span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary" id="submit-btn">
+              Send Feedback
+            </button>
+          </div>
+        </form>
+
+        <div id="success-message" class="success-message" style="display: none;">
+          <div class="success-icon">✓</div>
+          <h3>Thank you!</h3>
+          <p>Your feedback has been received. We appreciate you taking the time to help improve Botsters.</p>
+          <button class="btn btn-secondary" onclick="resetForm()">Send More Feedback</button>
+        </div>
+
+        <div id="error-message" class="error-message" style="display: none;">
+          <div class="error-icon">!</div>
+          <h3>Something went wrong</h3>
+          <p id="error-text">Please try again later.</p>
+          <button class="btn btn-secondary" onclick="hideError()">Try Again</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .feedback-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .feedback-form {
+      background: var(--color-bg-secondary);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid #222;
+    }
+
+    .checkbox-group {
+      margin-top: 0.5rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--color-accent);
+      cursor: pointer;
+    }
+
+    .checkbox-text {
+      color: var(--color-text);
+      font-size: 0.95rem;
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--color-bg);
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: var(--color-text);
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    .form-group button {
+      width: 100%;
+    }
+
+    .success-message,
+    .error-message {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--color-bg-secondary);
+      border-radius: 12px;
+      border: 1px solid #222;
+    }
+
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--color-success);
+      color: var(--color-bg);
+      font-size: 2rem;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .error-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--color-danger);
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .success-message h3,
+    .error-message h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .success-message p,
+    .error-message p {
+      color: var(--color-text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    #submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+
+  <script is:inline>
+    const form = document.getElementById('feedback-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const successMessage = document.getElementById('success-message');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get('name') || null,
+        email: formData.get('email') || null,
+        category: formData.get('category'),
+        message: formData.get('message'),
+        mailing_list: formData.get('mailing_list') === 'on',
+      };
+
+      try {
+        const response = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          form.style.display = 'none';
+          successMessage.style.display = 'block';
+        } else {
+          const result = await response.json().catch(() => ({}));
+          throw new Error(result.error || 'Failed to submit feedback');
+        }
+      } catch (err) {
+        errorText.textContent = err.message;
+        errorMessage.style.display = 'block';
+        form.style.display = 'none';
+      }
+    });
+
+    function resetForm() {
+      form.reset();
+      form.style.display = 'block';
+      successMessage.style.display = 'none';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Feedback';
+    }
+
+    function hideError() {
+      errorMessage.style.display = 'none';
+      form.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Feedback';
+    }
+  </script>
+</BaseLayout>

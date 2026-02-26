@@ -1,0 +1,344 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+export const prerender = false;
+
+// Check for auth cookie
+const authCookie = Astro.cookies.get('seksbot_admin');
+const isAuthenticated = authCookie?.value === 'authenticated';
+
+if (!isAuthenticated) {
+  return Astro.redirect('/admin');
+}
+
+// Get feedback from D1
+const runtime = Astro.locals.runtime;
+const db = runtime?.env?.DB;
+
+// Check for section filter in URL
+const url = new URL(Astro.request.url);
+const sectionFilter = url.searchParams.get('section');
+
+let feedback: any[] = [];
+let sections: string[] = [];
+let error = null;
+
+if (db) {
+  try {
+    // Get feedback with optional section filter
+    let query = 'SELECT * FROM feedback';
+    if (sectionFilter) {
+      query += ` WHERE section = '${sectionFilter}'`;
+    }
+    query += ' ORDER BY created_at DESC';
+    
+    const result = await db.prepare(query).all();
+    feedback = result.results || [];
+    
+    // Get distinct sections for filter dropdown
+    const sectionsResult = await db
+      .prepare('SELECT DISTINCT section FROM feedback WHERE section IS NOT NULL')
+      .all();
+    sections = (sectionsResult.results || []).map((r: any) => r.section);
+  } catch (e) {
+    error = 'Failed to load feedback';
+    console.error(e);
+  }
+} else {
+  error = 'Database not available';
+}
+---
+
+<BaseLayout title="Admin - Feedback" description="Manage feedback">
+  <section class="section">
+    <div class="container">
+      <div class="admin-header">
+        <h1>Feedback Dashboard</h1>
+        <div class="admin-actions">
+          <span class="feedback-count">{feedback.length} submissions</span>
+          <a href="/api/admin/logout" class="btn btn-secondary btn-sm">Logout</a>
+        </div>
+      </div>
+
+      {sections.length > 0 && (
+        <div class="section-filters">
+          <span class="filter-label">Filter by section:</span>
+          <a href="/admin/feedback" class={!sectionFilter ? 'active' : ''}>All</a>
+          {sections.map(s => (
+            <a href={`/admin/feedback?section=${s}`} class={sectionFilter === s ? 'active' : ''}>{s}</a>
+          ))}
+        </div>
+      )}
+
+      {error && <div class="notice notice-warning">{error}</div>}
+
+      {feedback.length === 0 && !error && (
+        <div class="empty-state">
+          <p>No feedback yet.</p>
+        </div>
+      )}
+
+      <div class="feedback-list">
+        {feedback.map((item) => (
+          <div class={`feedback-card ${item.reviewed ? 'reviewed' : ''}`} data-id={item.id}>
+            <div class="feedback-header">
+              <span class={`category-badge category-${item.category}`}>{item.category}</span>
+              {item.section && <span class="section-badge">📍 {item.section}</span>}
+              <span class="feedback-date">{new Date(item.created_at + 'Z').toLocaleString()}</span>
+              {item.reviewed ? <span class="reviewed-badge">✓ Reviewed</span> : null}
+            </div>
+            <div class="feedback-body">
+              <p class="feedback-message">{item.message}</p>
+            </div>
+            <div class="feedback-footer">
+              <div class="feedback-meta">
+                {item.name && <span class="meta-item">👤 {item.name}</span>}
+                {item.email && <span class="meta-item">✉️ {item.email}</span>}
+              </div>
+              <div class="feedback-actions">
+                {!item.reviewed && (
+                  <button class="btn btn-sm btn-primary mark-reviewed" data-id={item.id}>
+                    Mark Reviewed
+                  </button>
+                )}
+                <button class="btn btn-sm btn-danger delete-feedback" data-id={item.id}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .admin-header h1 {
+      margin: 0;
+    }
+
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .feedback-count {
+      color: var(--color-text-muted);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.875rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--color-text-muted);
+    }
+
+    .feedback-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .feedback-card {
+      background: var(--color-bg-secondary);
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .feedback-card.reviewed {
+      opacity: 0.7;
+    }
+
+    .feedback-card.deleting {
+      opacity: 0.3;
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .category-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .category-feature { background: rgba(0, 212, 255, 0.2); color: var(--color-accent); }
+    .category-bug { background: rgba(255, 68, 102, 0.2); color: var(--color-danger); }
+    .category-security { background: rgba(255, 170, 0, 0.2); color: var(--color-warning); }
+    .category-question { background: rgba(0, 255, 136, 0.2); color: var(--color-success); }
+    .category-other { background: rgba(136, 136, 136, 0.2); color: var(--color-text-muted); }
+
+    .feedback-date {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .reviewed-badge {
+      color: var(--color-success);
+      font-size: 0.875rem;
+    }
+
+    .feedback-message {
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .feedback-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #222;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .feedback-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .feedback-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--color-danger);
+      color: var(--color-danger);
+    }
+
+    .btn-danger:hover {
+      background: var(--color-danger);
+      color: white;
+    }
+
+    .section-filters {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .section-filters a {
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: var(--color-bg-secondary);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .section-filters a:hover {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    .section-filters a.active {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    .section-badge {
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      background: rgba(136, 136, 255, 0.2);
+      color: #aaf;
+    }
+  </style>
+
+  <script is:inline>
+    document.querySelectorAll('.mark-reviewed').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const card = document.querySelector(`.feedback-card[data-id="${id}"]`);
+        
+        try {
+          const res = await fetch('/api/admin/feedback', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, reviewed: true })
+          });
+          
+          if (res.ok) {
+            card.classList.add('reviewed');
+            btn.remove();
+            const header = card.querySelector('.feedback-header');
+            const badge = document.createElement('span');
+            badge.className = 'reviewed-badge';
+            badge.textContent = '✓ Reviewed';
+            header.appendChild(badge);
+          }
+        } catch (err) {
+          alert('Failed to update');
+        }
+      });
+    });
+
+    document.querySelectorAll('.delete-feedback').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this feedback?')) return;
+        
+        const id = btn.dataset.id;
+        const card = document.querySelector(`.feedback-card[data-id="${id}"]`);
+        card.classList.add('deleting');
+        
+        try {
+          const res = await fetch('/api/admin/feedback', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          
+          if (res.ok) {
+            card.remove();
+          } else {
+            card.classList.remove('deleting');
+            alert('Failed to delete');
+          }
+        } catch (err) {
+          card.classList.remove('deleting');
+          alert('Failed to delete');
+        }
+      });
+    });
+  </script>
+</BaseLayout>

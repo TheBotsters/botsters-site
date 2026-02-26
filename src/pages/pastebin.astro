@@ -1,0 +1,289 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Pastebin" description="Burn-after-reading secure pastebin">
+  <section class="section">
+    <div class="container">
+      <h1>🔥 Burn-After-Reading Pastebin</h1>
+      <p class="subtitle">Share secrets securely. Content is deleted after first read or 15 minutes — whichever comes first.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="write">Write</button>
+        <button class="tab" data-tab="read">Read</button>
+      </div>
+
+      <div id="write-panel" class="panel">
+        <form id="write-form">
+          <label for="write-key">Passphrase <span class="hint">(10+ characters)</span></label>
+          <input type="text" id="write-key" placeholder="e.g. correct-horse-battery-staple" autocomplete="off" required minlength="10" />
+
+          <label for="write-content">Content</label>
+          <textarea id="write-content" rows="6" placeholder="Paste your secret here..." required></textarea>
+
+          <button type="submit" class="btn" id="write-btn">Store</button>
+        </form>
+        <div id="write-result" class="result" hidden></div>
+      </div>
+
+      <div id="read-panel" class="panel" hidden>
+        <form id="read-form">
+          <label for="read-key">Passphrase</label>
+          <input type="text" id="read-key" placeholder="Enter the passphrase" autocomplete="off" required minlength="10" />
+
+          <button type="submit" class="btn" id="read-btn">Retrieve & Burn</button>
+        </form>
+        <div id="read-result" class="result" hidden></div>
+      </div>
+
+      <div class="info-box">
+        <h3>How it works</h3>
+        <ul>
+          <li>🔑 Choose a passphrase (shared out-of-band with the recipient)</li>
+          <li>📝 Store your content — it's held for up to 15 minutes</li>
+          <li>🔥 First retrieval deletes it permanently — no copies, no logs</li>
+          <li>⏱️ 3-second rate limit on all operations to deter brute force</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .subtitle {
+      color: var(--color-text-muted);
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #333;
+    }
+
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: var(--color-text);
+    }
+
+    .tab.active {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .panel {
+      max-width: 600px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .hint {
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+
+    input, textarea {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      color: var(--color-text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background: var(--color-accent);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      width: fit-content;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+
+    .result.success {
+      background: #0a2a0a;
+      border: 1px solid #1a4a1a;
+      color: #4ade80;
+    }
+
+    .result.error {
+      background: #2a0a0a;
+      border: 1px solid #4a1a1a;
+      color: #f87171;
+    }
+
+    .result.content {
+      background: #111;
+      border: 1px solid #333;
+      color: var(--color-text);
+    }
+
+    .info-box {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+    }
+
+    .info-box h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+
+    .info-box ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .info-box li {
+      padding: 0.3rem 0;
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const writePanel = document.getElementById('write-panel');
+    const readPanel = document.getElementById('read-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const target = tab.getAttribute('data-tab');
+        writePanel.hidden = target !== 'write';
+        readPanel.hidden = target !== 'read';
+      });
+    });
+
+    // Write
+    document.getElementById('write-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const key = document.getElementById('write-key').value;
+      const content = document.getElementById('write-content').value;
+      const btn = document.getElementById('write-btn');
+      const result = document.getElementById('write-result');
+
+      btn.disabled = true;
+      btn.textContent = 'Storing...';
+      result.hidden = true;
+
+      try {
+        const res = await fetch(`/api/pastebin?key=${encodeURIComponent(key)}`, {
+          method: 'POST',
+          body: content,
+        });
+
+        if (res.status === 204) {
+          result.hidden = false;
+          result.className = 'result success';
+          result.textContent = '✅ Stored. Share the passphrase with your recipient. Content expires in 15 minutes or on first read.';
+          document.getElementById('write-content').value = '';
+        } else {
+          result.hidden = false;
+          result.className = 'result error';
+          result.textContent = `❌ Failed (HTTP ${res.status}). Passphrase must be 10+ characters.`;
+        }
+      } catch (err) {
+        result.hidden = false;
+        result.className = 'result error';
+        result.textContent = `❌ Error: ${err.message}`;
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Store';
+    });
+
+    // Read
+    document.getElementById('read-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const key = document.getElementById('read-key').value;
+      const btn = document.getElementById('read-btn');
+      const result = document.getElementById('read-result');
+
+      btn.disabled = true;
+      btn.textContent = 'Retrieving...';
+      result.hidden = true;
+
+      try {
+        const res = await fetch(`/api/pastebin?key=${encodeURIComponent(key)}`);
+
+        if (res.ok) {
+          const text = await res.text();
+          result.hidden = false;
+          result.className = 'result content';
+          result.textContent = text;
+        } else {
+          result.hidden = false;
+          result.className = 'result error';
+          result.textContent = '❌ Not found — already burned or expired.';
+        }
+      } catch (err) {
+        result.hidden = false;
+        result.className = 'result error';
+        result.textContent = `❌ Error: ${err.message}`;
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Retrieve & Burn';
+    });
+  </script>
+</BaseLayout>

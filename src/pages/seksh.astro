@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="seksh" description="seksh - Secure shell with credential isolation (nushell fork)">
+  <section class="hero">
+    <div class="container">
+      <h1>seksh</h1>
+      <p>A nushell fork with secure credential handling</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="article">
+        <h2>What is seksh?</h2>
+        <p>
+          <code>seksh</code> is a fork of <a href="https://www.nushell.sh/">nushell</a> that integrates with the 
+          <a href="/security">SEKS Broker</a> for secure secret management. It adds commands that let you 
+          use API keys, tokens, and credentials without ever exposing them to your shell session.
+        </p>
+
+        <div class="notice notice-info">
+          <strong>Core principle:</strong> Agents and shells should be able to use secrets without seeing them.
+        </div>
+
+        <h2>Key Features</h2>
+        
+        <h3>🔐 Zero-Knowledge Secret Injection</h3>
+        <p>
+          Secrets go directly from the broker to external commands. Your shell session never sees the actual values—
+          only secret names.
+        </p>
+        <pre><code># List available secrets (names only)
+> listseks
+╭───┬──────────────────────────╮
+│ 0 │ GITHUB_TOKEN             │
+│ 1 │ OPENAI_API_KEY           │
+│ 2 │ AWS_SECRET_ACCESS_KEY    │
+╰───┴──────────────────────────╯</code></pre>
+
+        <h3>🌐 seksh-http</h3>
+        <p>
+          Make HTTP requests with secrets injected internally. The shell sees the request structure, 
+          but never the actual token values.
+        </p>
+        <pre><code># Secret is injected by the broker, not visible in shell
+> seksh-http GET "https://api.github.com/user" --auth GITHUB_TOKEN
+{`{"login": "yourname", "id": 12345}`}</code></pre>
+
+        <h3>📦 seksh-git</h3>
+        <p>
+          Run git commands with credentials injected securely. Clone private repos, push commits—
+          all without exposing tokens.
+        </p>
+        <pre><code># Credentials injected at execution time
+> seksh-git clone "https://github.com/org/private-repo"
+Cloning into 'private-repo'...
+</code></pre>
+
+        <h3>🧹 Output Scrubbing</h3>
+        <p>
+          Defense-in-depth: if a secret accidentally appears in command output, it gets redacted 
+          before reaching your terminal. Catches raw, base64, and hex-encoded secrets.
+        </p>
+        <pre><code># If a command accidentally leaks a secret:
+> some-command
+Token: [REDACTED]   # Was: ghp_xxxx...</code></pre>
+
+        <h2>How It Works</h2>
+        
+        <pre><code>┌─────────────────────────────────────────────┐
+│              Your Shell (seksh)             │
+│   You see: "seksh-http --auth GITHUB_TOKEN" │
+└─────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────┐
+│              SEKS Broker                    │
+│   1. Receives request with secret NAME      │
+│   2. Fetches actual secret value            │
+│   3. Injects into HTTP headers              │
+│   4. Makes request                          │
+│   5. Scrubs response                        │
+│   6. Returns safe output                    │
+└─────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────┐
+│            External API                     │
+│   Receives: Authorization: Bearer ghp_...   │
+└─────────────────────────────────────────────┘</code></pre>
+
+        <h2>Installation</h2>
+        <pre><code># Clone and build from source
+git clone https://github.com/SEKSBot/seksh
+cd seksh
+git checkout seks-shell
+cargo build --release
+
+# Configure broker connection
+export SEKS_BROKER_URL="https://your-broker.example.com"
+export SEKS_AGENT_TOKEN="seks_agent_..."
+
+# Run seksh
+./target/release/nu</code></pre>
+
+        <h2>Why Not Just Use Environment Variables?</h2>
+        <p>
+          Environment variables are visible to:
+        </p>
+        <ul>
+          <li>Any process you spawn</li>
+          <li>Shell history</li>
+          <li>Process listings (<code>ps eww</code>)</li>
+          <li>Crash dumps and logs</li>
+          <li>AI agents with shell access</li>
+        </ul>
+        <p>
+          With seksh, secrets stay in the broker. Your shell only knows secret <em>names</em>, 
+          never <em>values</em>.
+        </p>
+
+        <div class="cta-box">
+          <p>Questions or feedback? <a href="/feedback">Let us know!</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .cta-box {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--color-bg-secondary);
+      border-radius: 12px;
+      text-align: center;
+    }
+  </style>
+</BaseLayout>

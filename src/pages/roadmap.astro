@@ -1,0 +1,446 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Roadmap data - matches broker-api-roadmap.md in seksbot-shared
+const brokerEndpoints = [
+  { name: 'POST /secrets/get', status: 'live', purpose: 'Fetch a secret value' },
+  { name: 'POST /secrets/list', status: 'live', purpose: 'List available secret names' },
+  { name: 'POST /proxy/request', status: 'live', purpose: 'Generic proxied HTTP with credential injection' },
+  { name: 'POST /api/s3/presign', status: 'progress', purpose: 'Generate presigned S3 URLs (no keys on disk)' },
+  { name: 'ALL /api/openai/*', status: 'live', purpose: 'Passthrough proxy to OpenAI' },
+  { name: 'ALL /api/anthropic/*', status: 'live', purpose: 'Passthrough proxy to Anthropic' },
+  { name: 'ALL /api/github/*', status: 'live', purpose: 'Passthrough proxy to GitHub' },
+  { name: 'ALL /api/notion/*', status: 'live', purpose: 'Passthrough proxy to Notion' },
+  { name: 'ALL /api/gemini/*', status: 'live', purpose: 'Passthrough proxy to Gemini' },
+  { name: 'ALL /api/cloudflare/*', status: 'live', purpose: 'Passthrough proxy to Cloudflare' },
+  { name: 'ALL /api/brave/*', status: 'live', purpose: 'Passthrough proxy to Brave' },
+  { name: 'ALL /api/aws/s3/*', status: 'live', purpose: 'S3 passthrough with SigV4 signing' },
+];
+
+const sekshCommands = [
+  { name: 'seksh-http', status: 'live', purpose: 'HTTP requests with secret injection' },
+  { name: 'seksh-git', status: 'live', purpose: 'Git operations with token injection' },
+  { name: 'listseks', status: 'live', purpose: 'List available secrets' },
+  { name: 'getseks', status: 'deprecated', purpose: 'Raw secret fetch (security risk)' },
+];
+
+const escapeHatches = [
+  { tool: 'flyctl', current: 'getseks → env var', needed: 'seksh-fly or /api/fly/*' },
+  { tool: 'aws CLI', current: 'Not yet used', needed: 'seksh-aws wrapped command' },
+  { tool: 'gh CLI', current: 'getseks or local PAT', needed: 'seksh-gh wrapper' },
+  { tool: 'Gmail OAuth', current: 'Tokens in broker', needed: 'OAuth token refresh flow' },
+  { tool: 'wrangler', current: 'Local auth', needed: 'seksh-wrangler or passthrough' },
+];
+
+const planned = [
+  { priority: 'P0', items: [
+    { name: 'Tests for S3 presign endpoint', desc: 'SigV4 is fiddly, needs test coverage' },
+    { name: 'Merge s3-presign branch', desc: 'Deploy once tests pass' },
+    { name: 'Scoped secret stores', desc: 'Global + per-agent (eliminates AEONBYTE_ prefix hack)' },
+  ]},
+  { priority: 'P1', items: [
+    { name: 'seksh-fly', desc: 'Wrapped command for flyctl operations' },
+    { name: 'seksh-aws', desc: 'AWS CLI with credential injection' },
+    { name: '/api/fly/* passthrough', desc: 'Fly Machines API proxy in broker' },
+  ]},
+  { priority: 'P2', items: [
+    { name: 'seksh-gh', desc: 'GitHub CLI wrapper' },
+    { name: 'seksh-wrangler', desc: 'Cloudflare Wrangler CLI wrapper' },
+    { name: 'OAuth token refresh', desc: 'Broker-managed OAuth flows' },
+    { name: 'Secret rotation API', desc: 'Rotate keys without touching agent configs' },
+  ]},
+  { priority: 'P3', items: [
+    { name: 'Audit dashboard', desc: 'View broker logs (which agent used which secret)' },
+    { name: 'Rate limiting', desc: 'Per-agent, per-secret rate limits' },
+    { name: 'Secret expiry', desc: 'Auto-rotate or alert on aging credentials' },
+  ]},
+];
+
+const statusEmoji = {
+  live: '✅',
+  progress: '🔨',
+  planned: '📋',
+  deprecated: '⚠️',
+};
+---
+
+<BaseLayout title="Roadmap" description="SEKS Broker and seksh development roadmap">
+  <section class="hero">
+    <div class="container">
+      <h1>Roadmap</h1>
+      <p>What's built, what's next, and where we need help</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="article">
+        <div class="notice notice-info">
+          <strong>Status:</strong> 
+          ✅ Live · 🔨 In Progress · 📋 Planned · ⚠️ Deprecated
+        </div>
+
+        <!-- Broker Endpoints -->
+        <div class="roadmap-section">
+          <div class="section-header">
+            <h2>Broker Endpoints</h2>
+            <button class="suggest-btn" data-section="broker-endpoints">💡 Suggest</button>
+          </div>
+          <table class="roadmap-table">
+            <thead>
+              <tr>
+                <th>Endpoint</th>
+                <th>Status</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              {brokerEndpoints.map(e => (
+                <tr>
+                  <td><code>{e.name}</code></td>
+                  <td class={`status-${e.status}`}>{statusEmoji[e.status]}</td>
+                  <td>{e.purpose}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- seksh Commands -->
+        <div class="roadmap-section">
+          <div class="section-header">
+            <h2>seksh Commands</h2>
+            <button class="suggest-btn" data-section="seksh-commands">💡 Suggest</button>
+          </div>
+          <table class="roadmap-table">
+            <thead>
+              <tr>
+                <th>Command</th>
+                <th>Status</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sekshCommands.map(c => (
+                <tr>
+                  <td><code>{c.name}</code></td>
+                  <td class={`status-${c.status}`}>{statusEmoji[c.status]}</td>
+                  <td>{c.purpose}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Escape Hatches -->
+        <div class="roadmap-section">
+          <div class="section-header">
+            <h2>Escape Hatches</h2>
+            <button class="suggest-btn" data-section="escape-hatches">💡 Suggest</button>
+          </div>
+          <p class="section-desc">Tools where agents currently use <code>getseks</code> or bare keys — each is a candidate for a proper wrapped command.</p>
+          <table class="roadmap-table">
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>Current Method</th>
+                <th>What We Need</th>
+              </tr>
+            </thead>
+            <tbody>
+              {escapeHatches.map(h => (
+                <tr>
+                  <td><code>{h.tool}</code></td>
+                  <td>{h.current}</td>
+                  <td>{h.needed}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Planned Work -->
+        <div class="roadmap-section">
+          <div class="section-header">
+            <h2>Planned Work</h2>
+            <button class="suggest-btn" data-section="planned">💡 Suggest</button>
+          </div>
+          {planned.map(p => (
+            <div class="priority-group">
+              <h3>{p.priority}</h3>
+              <ul>
+                {p.items.map(item => (
+                  <li><strong>{item.name}</strong> — {item.desc}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <!-- Design Principle -->
+        <div class="principle-box">
+          <h3>Design Principle</h3>
+          <p><strong>If an agent needs a credential, it should go through the broker.</strong></p>
+          <p>Every <code>getseks</code> call is technical debt. Every bare key on disk is a security gap. The goal is zero escape hatches — every tool we use has either a wrapped command or a broker passthrough.</p>
+        </div>
+
+        <div class="cta-box">
+          <p>Want to request a feature or integration? <a href="/feedback">Send us feedback</a> or click any 💡 Suggest button above.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Suggestion Modal -->
+  <div id="suggest-modal" class="modal" hidden>
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <h3>Suggest for <span id="modal-section"></span></h3>
+      <form id="suggest-form">
+        <input type="hidden" name="section" id="suggest-section">
+        <div class="form-group">
+          <label for="suggest-message">Your suggestion</label>
+          <textarea id="suggest-message" name="message" rows="4" required placeholder="What would you like to see?"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="suggest-email">Email (optional)</label>
+          <input type="email" id="suggest-email" name="email" placeholder="For follow-up questions">
+        </div>
+        <button type="submit" class="btn-primary">Submit</button>
+      </form>
+      <div id="suggest-success" hidden>
+        <p>✅ Thanks for your suggestion!</p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-header h2 {
+      margin: 0;
+    }
+
+    .suggest-btn {
+      background: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .suggest-btn:hover {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    .roadmap-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-desc {
+      color: var(--color-text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .roadmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .roadmap-table th,
+    .roadmap-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .roadmap-table th {
+      background: var(--color-bg-secondary);
+      font-weight: 600;
+    }
+
+    .roadmap-table code {
+      background: var(--color-bg-secondary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .status-live { color: #22c55e; }
+    .status-progress { color: #f59e0b; }
+    .status-planned { color: #3b82f6; }
+    .status-deprecated { color: #ef4444; }
+
+    .priority-group h3 {
+      margin-top: 1.5rem;
+      color: var(--color-accent);
+    }
+
+    .principle-box {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, var(--color-bg-secondary), transparent);
+      border-left: 4px solid var(--color-accent);
+      border-radius: 8px;
+    }
+
+    .principle-box h3 {
+      margin-top: 0;
+    }
+
+    .cta-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--color-bg-secondary);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal[hidden] {
+      display: none;
+    }
+
+    .modal-content {
+      background: var(--color-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      background: var(--color-bg-secondary);
+      color: var(--color-text);
+    }
+
+    .btn-primary {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .roadmap-table {
+        font-size: 0.85rem;
+      }
+
+      .roadmap-table th:nth-child(3),
+      .roadmap-table td:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+
+  <script>
+    const modal = document.getElementById('suggest-modal');
+    const modalSection = document.getElementById('modal-section');
+    const suggestSection = document.getElementById('suggest-section');
+    const suggestForm = document.getElementById('suggest-form');
+    const suggestSuccess = document.getElementById('suggest-success');
+
+    // Open modal
+    document.querySelectorAll('.suggest-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const section = btn.dataset.section;
+        modalSection.textContent = section.replace(/-/g, ' ');
+        suggestSection.value = section;
+        suggestForm.hidden = false;
+        suggestSuccess.hidden = true;
+        modal.hidden = false;
+      });
+    });
+
+    // Close modal
+    document.querySelector('.modal-close').addEventListener('click', () => {
+      modal.hidden = true;
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.hidden = true;
+    });
+
+    // Submit suggestion
+    suggestForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(suggestForm);
+      
+      try {
+        const res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category: 'feature',
+            section: formData.get('section'),
+            message: formData.get('message'),
+            email: formData.get('email') || null,
+            name: null,
+          }),
+        });
+
+        if (res.ok) {
+          suggestForm.hidden = true;
+          suggestSuccess.hidden = false;
+          setTimeout(() => { modal.hidden = true; }, 1500);
+        }
+      } catch (err) {
+        console.error('Suggestion failed:', err);
+      }
+    });
+  </script>
+</BaseLayout>

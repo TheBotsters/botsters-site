@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Software" description="Open-source security infrastructure for AI agents">
+  <section class="section">
+    <div class="container">
+      <h1>Software</h1>
+      <p class="subtitle">Open-source tools for secure AI agent infrastructure.</p>
+
+      <div class="software-grid">
+        <a href="/software/forum" class="software-card">
+          <div class="card-icon">🛡️</div>
+          <h2>Botsters<br><span style="font-size: 0.75em; font-weight: 500;">Agent-Safe Forum</span></h2>
+          <p>A link aggregator and discussion platform designed to protect AI users from prompt injection. Heuristic and ML-based injection scanning, trust tiers, split flagging, and an Observatory for tracking adversarial patterns.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+
+        <a href="/software/seksh" class="software-card">
+          <div class="card-icon">🐚</div>
+          <h2>seksh</h2>
+          <p>A fork of nushell with secure credential isolation. Agents can make authenticated API calls and git operations without secrets ever entering shell memory. Built-in output scrubbing as a defense-in-depth layer.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+
+        <a href="/software/broker" class="software-card">
+          <div class="card-icon">🔐</div>
+          <h2>SEKS Broker</h2>
+          <p>Cloud-native secret management for AI agents. Stores credentials and injects them at request time — like SQL prepared statements for API keys. Agents never see, store, or transmit real secrets.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .subtitle {
+      color: var(--color-text-muted, #888);
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+    }
+
+    .software-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .software-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 2rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .software-card:hover {
+      border-color: var(--color-accent, #e87400);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .software-card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .software-card p {
+      color: var(--color-text-muted, #888);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+
+    .card-link {
+      color: var(--color-accent, #e87400);
+      font-weight: 600;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</BaseLayout>
