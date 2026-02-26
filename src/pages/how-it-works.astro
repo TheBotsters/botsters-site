@@ -1,0 +1,758 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="How It Works"
+  description="How the Brain/Spine/Actuator architecture gives AI agents real capability without credential exposure — and why that matters."
+>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Architecture Deep Dive</p>
+        <h1>How Botsters Works</h1>
+        <p>
+          Four hard questions about AI agent security — answered directly.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="toc-bar">
+    <div class="container">
+      <ul class="toc-links">
+        <li><a href="#blind-auth">Blind Auth</a></li>
+        <li><a href="#guaranteed-logging">Guaranteed Logging</a></li>
+        <li><a href="#bsa-vs-openclaw">BSA vs. OpenClaw</a></li>
+        <li><a href="#why-not-firewall">Why Not a Firewall?</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="section" id="blind-auth">
+    <div class="container">
+      <div class="article">
+        <div class="q-label">Question 1</div>
+        <h2>How can agents get work done without being able to see any auth?</h2>
+
+        <p>
+          The short answer: the Spine handles authentication on the agent's behalf. The agent
+          never needs to see a credential to <em>use</em> one.
+        </p>
+
+        <p>
+          Think of it like a valet. You give the valet a ticket, not your car keys. The valet has
+          the keys. When you need your car, you present the ticket and the valet does the rest —
+          you never handle the keys at all.
+        </p>
+
+        <h3>The Mechanism</h3>
+        <p>
+          Every agent in the Botsters system authenticates with a single <strong>agent token</strong>
+          — a revocable, scoped identity credential that has no value outside the Spine. Real API
+          keys (GitHub, AWS, Anthropic, Cloudflare, etc.) live only in the Spine's encrypted vault.
+        </p>
+
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-icon">🧠</div>
+            <div class="flow-label">Brain</div>
+            <div class="flow-desc">Knows its agent token. Nothing else.</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-icon">🦴</div>
+            <div class="flow-label">Spine</div>
+            <div class="flow-desc">Validates token. Holds real credentials. Injects them at request time.</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-icon">🌐</div>
+            <div class="flow-label">External API</div>
+            <div class="flow-desc">Receives a properly authenticated request. Never interacts with the agent directly.</div>
+          </div>
+        </div>
+
+        <p>
+          When a Brain needs to call the GitHub API, it sends its request to the Spine with its
+          agent token. The Spine looks up the real GitHub PAT, injects it into the outbound
+          request, forwards the call, and returns the result — with any credential values scrubbed
+          from the response. The agent gets the data it needed. The secret never left the Spine.
+        </p>
+
+        <p>
+          Actuators work the same way. When an Actuator needs to run a git push, the Spine injects
+          credentials ephemerally into the task execution context — in memory only, never written
+          to disk, gone when the task completes.
+        </p>
+
+        <div class="notice notice-success">
+          <strong>The result:</strong> A compromised agent can't exfiltrate what it never had.
+          Prompt injection, jailbreaks, and supply chain attacks that attempt to extract credentials
+          from the agent's environment find nothing — because there's nothing there.
+        </div>
+
+        <h3>But doesn't the agent still have access?</h3>
+        <p>
+          Yes — a controlled, audited, revocable form of access. A compromised agent can make
+          authorized requests through the Spine, but:
+        </p>
+        <ul>
+          <li>Every request is logged with timestamp, agent identity, and action</li>
+          <li>The Spine can rate-limit, scope, or revoke access without touching the underlying secret</li>
+          <li>Unusual activity patterns can trigger alerts before significant damage is done</li>
+          <li>Rotating the underlying credential doesn't require touching the agent — just update the Spine's vault</li>
+        </ul>
+        <p>
+          Compare this to the alternative: an agent with a raw API key in its environment can
+          exfiltrate that key in a single injected instruction, and it works forever until you
+          discover the breach and rotate manually.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark" id="guaranteed-logging">
+    <div class="container">
+      <div class="article">
+        <div class="q-label">Question 2</div>
+        <h2>Why does the Spine guarantee logging and attestation?</h2>
+        <p class="subtitle-note">Both inference and actuator actions.</p>
+
+        <p>
+          In a standard agent setup, logging is optional — an afterthought bolted on by whoever
+          built the integration. The agent might log. Or it might not. The model API might have
+          usage logs. Or they might be incomplete. When something goes wrong, you're reconstructing
+          what happened from fragments.
+        </p>
+
+        <p>
+          The Spine makes logging <em>structurally mandatory</em>, not a configuration choice.
+        </p>
+
+        <h3>Why "guaranteed" isn't just a claim</h3>
+        <p>
+          Every outbound call — inference requests to Claude/GPT/Gemini, tool calls, shell
+          commands, file operations, API calls to external services — flows through the Spine.
+          There is no bypass. An agent that wants to do anything has to go through the Spine,
+          and the Spine logs everything before dispatching.
+        </p>
+
+        <div class="grid grid-2" style="margin: 2rem 0;">
+          <div class="card">
+            <h3>📝 Inference Logging</h3>
+            <p>
+              Every model call is logged: timestamp, agent identity, model used, token counts,
+              and response hash. The Spine proxies all inference traffic, so there is no path
+              for an agent to call a model without leaving a record.
+            </p>
+            <p>
+              This also enables cost attribution across a multi-agent system — you know exactly
+              which agent spent how much.
+            </p>
+          </div>
+          <div class="card">
+            <h3>⚙️ Actuator Action Logging</h3>
+            <p>
+              Every task dispatched to an Actuator — shell command, file write, git operation,
+              browser action — is logged before execution, with the requesting agent's identity
+              attached.
+            </p>
+            <p>
+              The Actuator cannot receive a task without the Spine having recorded it first.
+              Execution and logging are not separable steps.
+            </p>
+          </div>
+        </div>
+
+        <h3>Attestation: knowing logs haven't been tampered with</h3>
+        <p>
+          Logging is only useful if you can trust the logs. The Spine provides attestation by
+          being the sole authorized intermediary — neither Brains nor Actuators write directly
+          to the log store. An agent cannot delete or alter its own log entries because it
+          has no interface to do so. Log integrity is enforced by access architecture, not
+          by trusting the agents themselves.
+        </p>
+
+        <div class="notice notice-info">
+          <strong>Why this matters for compliance and incident response:</strong> When an agent
+          does something unexpected, you have a complete, tamper-resistant record — not just
+          of what it told the model, but of every external action it took. Audit trails that
+          cover the full agent action surface, not just the conversation layer.
+        </div>
+
+        <h3>The comparison</h3>
+        <div class="comparison-table">
+          <div class="comparison-row comparison-header">
+            <div>Concern</div>
+            <div>Standard OpenClaw</div>
+            <div>BSA (Spine)</div>
+          </div>
+          <div class="comparison-row">
+            <div>Inference logging</div>
+            <div class="neg">Optional / provider-side only</div>
+            <div class="pos">Mandatory, agent-attributed</div>
+          </div>
+          <div class="comparison-row">
+            <div>Tool call logging</div>
+            <div class="neg">If the agent logs it</div>
+            <div class="pos">Mandatory, pre-execution</div>
+          </div>
+          <div class="comparison-row">
+            <div>Shell command logging</div>
+            <div class="neg">Shell history, if not cleared</div>
+            <div class="pos">Mandatory via Actuator dispatch</div>
+          </div>
+          <div class="comparison-row">
+            <div>Log integrity</div>
+            <div class="neg">Agent has write access</div>
+            <div class="pos">Agent has no log interface</div>
+          </div>
+          <div class="comparison-row">
+            <div>Cost attribution</div>
+            <div class="neg">Per-account only</div>
+            <div class="pos">Per-agent, per-task</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="bsa-vs-openclaw">
+    <div class="container">
+      <div class="article">
+        <div class="q-label">Question 3</div>
+        <h2>Why is Brain/Spine/Actuator superior to standard OpenClaw?</h2>
+
+        <p>
+          OpenClaw is excellent software. The Botsters system is built on top of an OpenClaw fork
+          for the Brain layer. This isn't a criticism of OpenClaw — it's an observation that
+          OpenClaw is designed for a different threat model.
+        </p>
+
+        <p>
+          Standard OpenClaw assumes a trusted operator running an agent on trusted infrastructure
+          with well-understood tool access. That assumption breaks down when:
+        </p>
+        <ul>
+          <li>Agents operate autonomously for extended periods without human oversight</li>
+          <li>Multiple agents share infrastructure or secrets</li>
+          <li>Agents process untrusted input (web content, user-provided files, third-party APIs)</li>
+          <li>You need to audit what agents did after the fact</li>
+          <li>You're running agents for other people (multi-tenant)</li>
+        </ul>
+
+        <h3>The architectural differences</h3>
+
+        <div class="arch-compare">
+          <div class="arch-box arch-standard">
+            <h4>Standard OpenClaw</h4>
+            <div class="arch-diagram">
+              <div class="arch-node">🧠 Brain + Tools</div>
+              <div class="arch-arrow-down">↓</div>
+              <div class="arch-node">Shell / APIs / Files</div>
+            </div>
+            <ul class="arch-notes">
+              <li>Single trust boundary</li>
+              <li>Credentials in agent environment</li>
+              <li>Agent can log — or not</li>
+              <li>All capabilities always available</li>
+              <li>Compromise = full access</li>
+            </ul>
+          </div>
+
+          <div class="arch-box arch-bsa">
+            <h4>Brain / Spine / Actuator</h4>
+            <div class="arch-diagram">
+              <div class="arch-node">🧠 Brain</div>
+              <div class="arch-arrow-down">↓ token only</div>
+              <div class="arch-node arch-spine-node">🦴 Spine</div>
+              <div class="arch-arrow-down">↓ task + ephemeral creds</div>
+              <div class="arch-node">⚙️ Actuator</div>
+              <div class="arch-arrow-down">↓</div>
+              <div class="arch-node">Shell / APIs / Files</div>
+            </div>
+            <ul class="arch-notes">
+              <li>Three distinct trust boundaries</li>
+              <li>Credentials isolated in Spine vault</li>
+              <li>Logging mandatory by structure</li>
+              <li>Capabilities scoped per actuator</li>
+              <li>Compromise contained to one layer</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Separation of concerns — for real</h3>
+        <p>
+          In the BSA model, the Brain <em>decides</em> but doesn't <em>execute</em>. The Actuator
+          <em>executes</em> but doesn't <em>reason</em>. The Spine <em>mediates</em> — handling
+          credentials, routing, logging, and policy enforcement. Each layer does one thing and is
+          auditable in isolation.
+        </p>
+        <p>
+          This also means each layer can evolve independently. You can swap the Brain for a
+          different OpenClaw version, update the Actuator runtime, or harden the Spine's credential
+          handling — without touching the other layers. Multi-agent orchestration becomes a
+          routing concern for the Spine, not an architectural change.
+        </p>
+
+        <h3>Capability scoping</h3>
+        <p>
+          Each Actuator registers the capabilities it supports: <code>shell</code>, <code>git</code>,
+          <code>browser</code>, <code>file-system</code>, etc. The Brain requests tasks by
+          capability, not by Actuator identity. The Spine routes to a matched Actuator and enforces
+          that the task matches the registered capability profile.
+        </p>
+        <p>
+          A Brain running in a context that should only do code review cannot suddenly decide to
+          run shell commands if no <code>shell</code>-capable Actuator is registered for it. The
+          constraint is structural, not instructional — you're not relying on the agent to
+          remember it shouldn't do something.
+        </p>
+
+        <div class="notice notice-info">
+          <strong>For alpha:</strong> Botsters brains aren't lobotomized — they keep full OpenClaw
+          toolkits for now. The Spine routing is opt-in via configuration. The architecture is
+          ready; the enforcement hardens as the system matures.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark" id="why-not-firewall">
+    <div class="container">
+      <div class="article">
+        <div class="q-label">Question 4</div>
+        <h2>Why not just use a firewall or proxy on OpenClaw?</h2>
+
+        <p>
+          This is the most common objection, and it's worth taking seriously. A network-level
+          control is simpler to deploy and doesn't require architectural changes. Why not just
+          put a firewall or egress proxy in front of a standard OpenClaw instance?
+        </p>
+
+        <p>
+          The answer is that a firewall and an authenticated Spine solve different problems.
+          A firewall knows about <em>where</em> traffic goes. The Spine knows about <em>who</em>
+          generated it and <em>what they were trying to do</em>.
+        </p>
+
+        <h3>What a firewall can't tell you</h3>
+        <div class="grid grid-2" style="margin: 2rem 0;">
+          <div class="card">
+            <h3>❌ Identity</h3>
+            <p>
+              A firewall sees an outbound request to <code>api.github.com</code>. It doesn't know
+              whether that request came from your coding agent acting on your instruction, a
+              compromised agent exfiltrating repository contents, or a prompt injection attack
+              using the agent as a proxy.
+            </p>
+          </div>
+          <div class="card">
+            <h3>❌ Credential Containment</h3>
+            <p>
+              A firewall doesn't prevent an agent from reading <code>~/.aws/credentials</code>
+              and encoding the contents in a permitted outbound request — to a whitelisted domain,
+              in a query parameter, inside a JSON body. Exfiltration that stays within allowed
+              destinations is invisible to a network filter.
+            </p>
+          </div>
+          <div class="card">
+            <h3>❌ Semantic Logging</h3>
+            <p>
+              Firewall logs record connections: source, destination, bytes transferred.
+              They don't record that the agent just deleted a file, committed to main, or
+              called a model with a 50,000-token prompt. You can't reconstruct agent behavior
+              from network logs alone.
+            </p>
+          </div>
+          <div class="card">
+            <h3>❌ Fine-Grained Revocation</h3>
+            <p>
+              To stop a compromised agent at the firewall level, you have to block its IP —
+              which blocks everything running on that host. The Spine can revoke a single
+              agent token in milliseconds, without affecting any other agent or service sharing
+              the same infrastructure.
+            </p>
+          </div>
+        </div>
+
+        <h3>The layered answer</h3>
+        <p>
+          Firewalls and the Spine aren't alternatives — they're complementary. A firewall is
+          a good perimeter control: it prevents agents from reaching destinations they should
+          never reach. The Spine provides the layer a firewall can't: authenticated identity,
+          semantic logging, credential isolation, and fine-grained revocation at the application
+          layer.
+        </p>
+
+        <div class="notice notice-warning">
+          <strong>The proxy variant:</strong> "What about an authenticated egress proxy — one
+          that requires credentials to make outbound calls?" This is closer to what the Spine
+          does, but a proxy doesn't prevent the agent from <em>reading and encoding</em>
+          credentials before sending a request through the proxy. Only a system that never
+          gives the credentials to the agent in the first place can make that guarantee.
+        </div>
+
+        <h3>Defense in depth</h3>
+        <p>
+          Good security stacks layers. For AI agents running in production:
+        </p>
+        <ul>
+          <li><strong>Network layer:</strong> Firewall + egress allowlist — stops obvious bad destinations</li>
+          <li><strong>Application layer:</strong> Spine — identity, credentials, logging, revocation</li>
+          <li><strong>Execution layer:</strong> Actuator capability scoping — limits what agents can do</li>
+          <li><strong>Content layer:</strong> Output scrubbing — catches credentials in responses</li>
+        </ul>
+        <p>
+          A firewall alone covers one of these four layers. The Spine covers the other three —
+          and it makes the firewall's job easier by narrowing what traffic agents are permitted
+          to generate in the first place.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container cta-section">
+      <h2>Ready to go deeper?</h2>
+      <p>
+        The architecture is open. Read the docs, explore the code, or get in touch.
+      </p>
+      <div class="cta-buttons">
+        <a href="https://github.com/SEKSBot" class="btn btn-primary" target="_blank">View on GitHub</a>
+        <a href="/software" class="btn btn-secondary">Software</a>
+        <a href="/feedback" class="btn btn-ghost">Ask a Question</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 6rem 0 4rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%);
+  }
+
+  .hero-eyebrow {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .toc-bar {
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--border-muted);
+    position: sticky;
+    top: 57px;
+    z-index: 90;
+  }
+
+  .toc-links {
+    display: flex;
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .toc-links a {
+    display: block;
+    padding: 1rem 1.5rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .toc-links a:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    background: rgba(255, 107, 53, 0.05);
+  }
+
+  .article h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-accent);
+    margin: 0 0 1.5rem;
+    line-height: 1.2;
+  }
+
+  .article h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-amber);
+    margin: 2.5rem 0 1rem;
+  }
+
+  .article p {
+    margin-bottom: 1.25rem;
+    color: var(--color-text);
+    line-height: 1.7;
+  }
+
+  .article ul {
+    margin: 1rem 0 1.5rem 1.5rem;
+  }
+
+  .article ul li {
+    margin-bottom: 0.6rem;
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  .q-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--border-muted);
+    border-radius: 4px;
+    padding: 0.25rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle-note {
+    color: var(--color-text-muted) !important;
+    font-style: italic;
+    margin-top: -1rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0;
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    border-radius: 12px;
+    overflow-x: auto;
+  }
+
+  .flow-step {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    padding: 1rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .flow-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .flow-label {
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .flow-desc {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .flow-arrow {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .comparison-table {
+    border: 1px solid var(--border-muted);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .comparison-row:last-child {
+    border-bottom: none;
+  }
+
+  .comparison-row > div {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .comparison-header {
+    background: var(--color-bg-tertiary);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .comparison-row:nth-child(even):not(.comparison-header) {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .pos { color: var(--color-success); font-weight: 500; }
+  .neg { color: var(--color-text-muted); }
+
+  .arch-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .arch-box {
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-muted);
+  }
+
+  .arch-standard {
+    background: var(--color-bg-secondary);
+  }
+
+  .arch-bsa {
+    background: rgba(255, 107, 53, 0.05);
+    border-color: rgba(255, 107, 53, 0.3);
+  }
+
+  .arch-box h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .arch-bsa h4 {
+    color: var(--color-accent);
+  }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: rgba(0,0,0,0.25);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .arch-node {
+    padding: 0.4rem 1rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .arch-spine-node {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .arch-arrow-down {
+    color: var(--color-text-dim);
+    font-size: 0.78rem;
+  }
+
+  .arch-notes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .arch-notes li {
+    padding: 0.4rem 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .arch-notes li:last-child { border-bottom: none; }
+  .arch-bsa .arch-notes li { color: var(--color-text); }
+
+  .cta-section {
+    text-align: center;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .cta-section p {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.25rem; }
+
+    .flow-diagram { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+    .flow-step { width: 100%; }
+
+    .comparison-row { grid-template-columns: 1fr; }
+    .comparison-header { display: none; }
+    .comparison-row > div:first-child {
+      font-weight: 700;
+      color: var(--color-amber);
+      padding-bottom: 0;
+    }
+
+    .arch-compare { grid-template-columns: 1fr; }
+  }
+</style>
