@@ -1,15 +1,14 @@
-import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
 // Check cookie auth (web admin)
-function isAuthenticated(cookies: any): boolean {
+function isAuthenticated(cookies) {
   const authCookie = cookies.get('seksbot_admin');
   return authCookie?.value === 'authenticated';
 }
 
 // Check bearer token auth (API access for agents)
-function isTokenAuthenticated(request: Request, env: any): boolean {
+function isTokenAuthenticated(request) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) return false;
   const token = authHeader.slice(7);
@@ -17,7 +16,7 @@ function isTokenAuthenticated(request: Request, env: any): boolean {
 }
 
 // GET - List feedback (bearer token auth for agents)
-export const GET: APIRoute = async ({ request, locals, url }) => {
+export const GET = async ({ request, locals, url }) => {
   const runtime = locals.runtime;
   const env = runtime?.env;
   
@@ -43,8 +42,8 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
     const category = url.searchParams.get('category');
 
     let query = 'SELECT id, name, email, category, message, created_at, reviewed FROM feedback';
-    const conditions: string[] = [];
-    const params: any[] = [];
+    const conditions = [];
+    const params = [];
 
     if (unreviewed) {
       conditions.push('reviewed = 0');
@@ -79,7 +78,7 @@ export const GET: APIRoute = async ({ request, locals, url }) => {
   }
 };
 
-export const PATCH: APIRoute = async ({ request, cookies, locals }) => {
+export const PATCH = async ({ request, cookies, locals }) => {
   if (!isAuthenticated(cookies)) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
@@ -125,7 +124,7 @@ export const PATCH: APIRoute = async ({ request, cookies, locals }) => {
   }
 };
 
-export const DELETE: APIRoute = async ({ request, cookies, locals }) => {
+export const DELETE = async ({ request, cookies, locals }) => {
   if (!isAuthenticated(cookies)) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,

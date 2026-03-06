@@ -1,16 +1,15 @@
-import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
 const DELAY_MS = 3000;
 const MAX_AGE_MS = 15 * 60 * 1000; // 15 minutes
 
-function delay(ms: number): Promise<void> {
+function delay(ms){
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // POST /api/pastebin?key=<passphrase> — store content (body = raw text)
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST = async ({ request, locals }) => {
   const start = Date.now();
   const url = new URL(request.url);
   const key = url.searchParams.get('key');
@@ -26,7 +25,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return new Response(null, { status: 400 });
   }
 
-  const db = (locals as any).runtime?.env?.DB;
+  const db = (locals).runtime?.env?.DB;
   if (!db) {
     await delay(DELAY_MS - (Date.now() - start));
     return new Response(null, { status: 500 });
@@ -50,7 +49,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 };
 
 // GET /api/pastebin?key=<passphrase> — retrieve and burn
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET = async ({ request, locals }) => {
   const start = Date.now();
   const url = new URL(request.url);
   const key = url.searchParams.get('key');
@@ -60,7 +59,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     return new Response(null, { status: 404 });
   }
 
-  const db = (locals as any).runtime?.env?.DB;
+  const db = (locals).runtime?.env?.DB;
   if (!db) {
     await delay(DELAY_MS - (Date.now() - start));
     return new Response(null, { status: 404 });
@@ -70,7 +69,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const row = await db
     .prepare(`SELECT content, created_at FROM pastebin WHERE key = ?`)
     .bind(key)
-    .first<{ content: string; created_at: number }>();
+    .first();
 
   // Delete regardless (burn after reading)
   await db.prepare(`DELETE FROM pastebin WHERE key = ?`).bind(key).run();

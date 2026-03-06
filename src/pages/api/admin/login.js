@@ -1,9 +1,8 @@
-import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
 // Hash password using Web Crypto API (SHA-256)
-async function hashPassword(password: string): Promise<string> {
+async function hashPassword(password){
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -15,7 +14,7 @@ async function hashPassword(password: string): Promise<string> {
 // "blazer shy antihero chewer proposal" -> SHA-256
 const ADMIN_PASSWORD_HASH = '7a9d5e8c4b2f1a3e6d9c8b7a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e';
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST = async ({ request, cookies }) => {
   try {
     const { password } = await request.json();
     

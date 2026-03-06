@@ -12,7 +12,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <p class="hero-eyebrow">Architecture Deep Dive</p>
         <h1>How Botsters Works</h1>
         <p>
-          Four hard questions about AI agent security — answered directly.
+          Five hard questions about AI agent security — answered directly.
         </p>
       </div>
     </div>
@@ -25,6 +25,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <li><a href="#guaranteed-logging">Guaranteed Logging</a></li>
         <li><a href="#bsa-vs-openclaw">BSA vs. OpenClaw</a></li>
         <li><a href="#why-not-firewall">Why Not a Firewall?</a></li>
+        <li><a href="#is-there-a-moat">Is There a Moat?</a></li>
       </ul>
     </div>
   </nav>
@@ -493,7 +494,78 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <section class="section">
+  <!-- Q5 -->
+  <section class="section" id="is-there-a-moat">
+    <div class="container">
+      <div class="article">
+        <div class="q-label">Question 5</div>
+        <h2>Is there a moat?</h2>
+
+        <p>
+          Honestly? Agents like OpenClaw change all the rules. Moats are narrower and shallower
+          than they used to be. An experienced engineer with a capable coding agent can move
+          faster than ever — and so can a competitor.
+        </p>
+
+        <p>
+          That said, not everyone could "just vibe code" Brain / Spine / Actuator into existence.
+          The OpenClaw architecture has some pathologies, which we&rsquo;ve cleaned up with some
+          truly devious tricks. The OpenClaw structural snags can cause coding agents to loop.
+          It takes a good, experienced software engineer working <em>with</em> an agent some real
+          time to get it right. In this new era, that&rsquo;s not an enormous amount of time —
+          but it&rsquo;s not zero.
+        </p>
+
+        <h3>What the moat actually is</h3>
+
+        <div class="grid grid-2" style="margin: 2rem 0;">
+          <div class="card">
+            <h3>🏗️ Architectural Depth</h3>
+            <p>
+              The Brain / Spine / Actuator separation isn't just a design pattern — it has
+              subtle implementation details that interact in non-obvious ways. Getting the
+              credential injection boundary right, the logging guarantees correct, and the
+              capability scoping consistent across a live multi-machine setup is harder than
+              it looks on paper.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🧠 Agent-Resisting Complexity</h3>
+            <p>
+              Some of the architecture's design choices create snarls that cause coding
+              agents to loop — places where the obvious implementation is wrong in a way
+              that only becomes apparent when you understand the security model deeply.
+              These aren't bugs. They're features that require genuine comprehension to navigate.
+            </p>
+          </div>
+          <div class="card">
+            <h3>⏱️ Time-to-Production</h3>
+            <p>
+              Even with an agent, a solo engineer replicating this from scratch needs time.
+              We've already spent that time. We're moving forward while a competitor would be
+              starting the clock.
+            </p>
+          </div>
+          <div class="card">
+            <h3>🔗 Ecosystem Lock-in</h3>
+            <p>
+              Every customer whose Spine is running in their infrastructure, whose agents
+              are registered against it, whose audit logs are accumulating — that's switching
+              cost. The earlier we establish, the stickier the architecture becomes.
+            </p>
+          </div>
+        </div>
+
+        <div class="notice notice-info">
+          <strong>The honest answer:</strong> The moat is real but not permanent. There is
+          no choice but to move fast. The architecture has a head start, and we intend to
+          use it.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark">
     <div class="container cta-section">
       <h2>Ready to go deeper?</h2>
       <p>

@@ -1,0 +1,791 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Competitive Research"
+  description="Security-focused competitive analysis of AI agent frameworks vs. the Botsters Brain · Spine · Actuator architecture."
+>
+  <div class="pitch-page">
+
+    <!-- SLIDE 1: Title -->
+    <section class="slide slide-title">
+      <div class="slide-inner">
+        <div class="slide-eyebrow">Internal Research</div>
+        <div class="title-lockup">
+          <div class="company-name">Competitive Landscape</div>
+          <div class="tagline">Secrets sequestration &amp; modular security across AI agent frameworks</div>
+        </div>
+        <div class="research-date">February 2026</div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 2: The Question -->
+    <section class="slide slide-question">
+      <div class="slide-inner">
+        <div class="slide-number">01</div>
+        <div class="slide-label">The Question</div>
+        <h2>Who else is solving<br/>the secrets problem?</h2>
+
+        <div class="question-body">
+          <p class="question-lead">The core vulnerability in AI agent frameworks is structural: the agent brain holds or can access credentials directly. This enables prompt injection to become credential theft, and makes every skill/tool a potential attack surface.</p>
+          <p>We surveyed the major "Claw" lineage frameworks and the broader agent ecosystem on two axes:</p>
+          <ul class="question-axes">
+            <li><strong>Secrets sequestration</strong> — Does the brain ever see credential values?</li>
+            <li><strong>Modular separation</strong> — Is there an architectural boundary between reasoning, control, and execution?</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 3: OpenClaw (baseline) -->
+    <section class="slide slide-competitor">
+      <div class="slide-inner">
+        <div class="slide-number">02</div>
+        <div class="slide-label">The Baseline</div>
+        <h2>OpenClaw</h2>
+
+        <div class="comp-header">
+          <div class="comp-meta">
+            <span class="comp-tag comp-tag-oss">Open Source</span>
+            <span class="comp-tag comp-tag-personal">Personal Agent</span>
+          </div>
+          <div class="comp-verdict comp-verdict-bad">⚠ No Sequestration</div>
+        </div>
+
+        <div class="comp-grid">
+          <div class="comp-col">
+            <h3>Architecture</h3>
+            <p>Monolithic: the brain, secrets, skills, and actuators all run in a single process with a single user account. Skills (third-party plugins) execute with full access to the runtime environment — including any credentials stored in config files or environment variables.</p>
+          </div>
+          <div class="comp-col">
+            <h3>Secrets Handling</h3>
+            <p>Credentials live in plaintext config files or environment variables accessible to the agent process. Skills can read them; prompts can exfiltrate them. The ClawSecure audit (Feb 2026) found 41.7% of skills contained vulnerabilities — 30.6% high or critical severity.</p>
+          </div>
+        </div>
+
+        <div class="comp-findings">
+          <div class="finding finding-bad">
+            <div class="finding-icon">&#128265;</div>
+            <div class="finding-body">
+              <div class="finding-title">Documented API key leakage</div>
+              <div class="finding-desc">Giskard (Feb 2026): OpenClaw has leaked API keys and credentials across user sessions and IM channels via architectural weaknesses in session management.</div>
+            </div>
+          </div>
+          <div class="finding finding-bad">
+            <div class="finding-icon">&#129302;</div>
+            <div class="finding-body">
+              <div class="finding-title">RCE via prompt injection (CVE-2026-22708)</div>
+              <div class="finding-desc">Palo Alto Networks: a prompt injected via web search results can instruct OpenClaw to execute shell commands and exfiltrate secrets — no human-in-the-loop check by default.</div>
+            </div>
+          </div>
+          <div class="finding finding-bad">
+            <div class="finding-icon">&#127921;</div>
+            <div class="finding-body">
+              <div class="finding-title">No modular boundary</div>
+              <div class="finding-desc">Skills run in the same process as the agent. There is no "Spine" equivalent — no separation between what the brain decides and what can be executed or accessed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 4: IronClaw (NEAR AI) -->
+    <section class="slide slide-competitor">
+      <div class="slide-inner">
+        <div class="slide-number">03</div>
+        <div class="slide-label">Closest Competitor</div>
+        <h2>IronClaw <span class="comp-by">by NEAR AI</span></h2>
+
+        <div class="comp-header">
+          <div class="comp-meta">
+            <span class="comp-tag comp-tag-oss">Open Source</span>
+            <span class="comp-tag comp-tag-rust">Rust</span>
+            <span class="comp-tag comp-tag-tee">TEE / Enclave</span>
+          </div>
+          <div class="comp-verdict comp-verdict-partial">◑ Partial Sequestration</div>
+        </div>
+
+        <div class="comp-grid">
+          <div class="comp-col">
+            <h3>Architecture</h3>
+            <p>OpenClaw-inspired Rust rewrite, deployed inside a Trusted Execution Environment (TEE) on NEAR AI Cloud. Tools run in WASM sandboxes with capability-based permissions. A host boundary controls credential injection into WASM tool calls.</p>
+          </div>
+          <div class="comp-col">
+            <h3>Secrets Handling</h3>
+            <p>Secrets are injected at the host boundary and never exposed to WASM tool code directly — similar in principle to the Botsters Spine. However, the "Spine" equivalent is the NEAR AI cloud infrastructure, not customer-owned. Secrets encrypted with AES-256-GCM locally, but inference runs inside NEAR's TEE.</p>
+          </div>
+        </div>
+
+        <div class="comp-findings">
+          <div class="finding finding-good">
+            <div class="finding-icon">&#9989;</div>
+            <div class="finding-body">
+              <div class="finding-title">Credential injection at host boundary</div>
+              <div class="finding-desc">WASM tools request credentials by name; the host injects values directly into HTTP requests. The tool code never sees the raw secret — architecturally similar to seksh-http.</div>
+            </div>
+          </div>
+          <div class="finding finding-good">
+            <div class="finding-icon">&#9989;</div>
+            <div class="finding-body">
+              <div class="finding-title">Prompt injection defense layer</div>
+              <div class="finding-desc">Pattern-based detection, content sanitization, policy rules with Block/Warn/Review/Sanitize severity levels, and tool output wrapping. More mature than OpenClaw's default (none).</div>
+            </div>
+          </div>
+          <div class="finding finding-warn">
+            <div class="finding-icon">&#9888;&#65039;</div>
+            <div class="finding-body">
+              <div class="finding-title">Spine is vendor-controlled</div>
+              <div class="finding-desc">The TEE runs on NEAR AI Cloud infrastructure. The customer does not control the Spine — NEAR AI does. This is a fundamental trust boundary difference from Botsters: you must trust NEAR AI's enclave claims, not just your own hardware.</div>
+            </div>
+          </div>
+          <div class="finding finding-warn">
+            <div class="finding-icon">&#9888;&#65039;</div>
+            <div class="finding-body">
+              <div class="finding-title">No true Actuator separation</div>
+              <div class="finding-desc">Execution (shell, git, filesystem) still runs in the same hosted environment. There's no registered, scoped Actuator concept — WASM sandboxing limits tools but doesn't create a separate execution boundary on customer machines.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 5: IronClaw.tech (enterprise) -->
+    <section class="slide slide-competitor">
+      <div class="slide-inner">
+        <div class="slide-number">04</div>
+        <div class="slide-label">Enterprise Variant</div>
+        <h2>IronClaw <span class="comp-by">ironclaw.tech</span></h2>
+
+        <div class="comp-header">
+          <div class="comp-meta">
+            <span class="comp-tag comp-tag-commercial">Commercial</span>
+            <span class="comp-tag comp-tag-enterprise">Enterprise</span>
+            <span class="comp-tag comp-tag-services">Services</span>
+          </div>
+          <div class="comp-verdict comp-verdict-partial">◑ Policy Layer, Not Architecture</div>
+        </div>
+
+        <div class="comp-grid">
+          <div class="comp-col">
+            <h3>Architecture</h3>
+            <p>A consultancy/product that wraps OpenClaw-style agentic principles in three "control layers": Agent Orchestrator (heartbeats, cron, scheduling), Policy Engine (gating every action through compliance rules), and a Command Interface dashboard. Targets regulated industries: PE/banking, healthcare, legal.</p>
+          </div>
+          <div class="comp-col">
+            <h3>Secrets Handling</h3>
+            <p>"Scoped permissions and secure credential management" is mentioned as a feature of their Enterprise Integration capability — but the specific mechanism is not publicly documented. Policy enforcement is configuration-driven (infrastructure-as-code), not architectural. Secrets sequestration is implied, not structural.</p>
+          </div>
+        </div>
+
+        <div class="comp-findings">
+          <div class="finding finding-good">
+            <div class="finding-icon">&#9989;</div>
+            <div class="finding-body">
+              <div class="finding-title">Policy-gated execution</div>
+              <div class="finding-desc">Every agent action passes through a policy engine before execution — approved tools, data scopes, spending limits, model permissions. This is a real control layer, though it's enforcement-by-config rather than enforcement-by-architecture.</div>
+            </div>
+          </div>
+          <div class="finding finding-good">
+            <div class="finding-icon">&#9989;</div>
+            <div class="finding-body">
+              <div class="finding-title">Compliance audit trails</div>
+              <div class="finding-desc">Full logging of every agent decision, action, and data access — built for SOX, FINRA, HIPAA review. Strong posture for regulated industries.</div>
+            </div>
+          </div>
+          <div class="finding finding-warn">
+            <div class="finding-icon">&#9888;&#65039;</div>
+            <div class="finding-body">
+              <div class="finding-title">No structural secrets sequestration</div>
+              <div class="finding-desc">Control is policy-based, not architectural. If the policy engine is misconfigured or bypassed via prompt injection, the agent still has access to credentials. The underlying trust model hasn't changed — only a compliance wrapper has been added.</div>
+            </div>
+          </div>
+          <div class="finding finding-warn">
+            <div class="finding-icon">&#9888;&#65039;</div>
+            <div class="finding-body">
+              <div class="finding-title">No customer-controlled Spine</div>
+              <div class="finding-desc">The architecture is multi-layered but still vendor-managed. There is no equivalent to the customer-owned Spine that physically holds secrets separately from inference. The separation is logical, not architectural.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 6: Broader ecosystem -->
+    <section class="slide slide-ecosystem">
+      <div class="slide-inner">
+        <div class="slide-number">05</div>
+        <div class="slide-label">Broader Ecosystem</div>
+        <h2>LangChain · CrewAI · AutoGen<br/>&amp; Others</h2>
+
+        <div class="eco-grid">
+          <div class="eco-card">
+            <div class="eco-name">LangChain / LangGraph</div>
+            <div class="eco-tags">
+              <span class="comp-tag comp-tag-oss">OSS</span>
+              <span class="comp-tag comp-tag-framework">Framework</span>
+            </div>
+            <div class="eco-verdict eco-bad">No sequestration</div>
+            <p>Credentials passed as environment variables or injected into tool definitions. Security is entirely the developer's responsibility — LangChain enforces nothing. LangSmith adds observability but not secrets isolation.</p>
+          </div>
+          <div class="eco-card">
+            <div class="eco-name">CrewAI</div>
+            <div class="eco-tags">
+              <span class="comp-tag comp-tag-oss">OSS</span>
+              <span class="comp-tag comp-tag-framework">Framework</span>
+            </div>
+            <div class="eco-verdict eco-partial">RBAC, no structural isolation</div>
+            <p>Ships with role-based access control and encrypted data at rest. On-prem deployment available. Code execution is not sandboxed by default — developer must isolate risky operations. No credential injection boundary equivalent to a Spine.</p>
+          </div>
+          <div class="eco-card">
+            <div class="eco-name">AutoGen (Microsoft)</div>
+            <div class="eco-tags">
+              <span class="comp-tag comp-tag-oss">OSS</span>
+              <span class="comp-tag comp-tag-enterprise">Enterprise</span>
+            </div>
+            <div class="eco-verdict eco-partial">Docker isolation, Azure AD</div>
+            <p>Executes code in Docker containers — better process isolation than most. Azure AD integration for enterprise auth. Still passes credentials via environment, not via a brokered injection layer. Closest to modular execution, but the "Spine" concept doesn't exist.</p>
+          </div>
+          <div class="eco-card">
+            <div class="eco-name">Semantic Kernel (Microsoft)</div>
+            <div class="eco-tags">
+              <span class="comp-tag comp-tag-enterprise">Enterprise</span>
+              <span class="comp-tag comp-tag-ms">Microsoft</span>
+            </div>
+            <div class="eco-verdict eco-partial">Enterprise patterns, vendor lock-in</div>
+            <p>Enterprise-grade security patterns built in — Azure AD, sandboxing, audit via Azure Monitor. Strong for Azure-native shops. No structural secrets sequestration independent of the Azure stack; trust boundary is Microsoft, not the customer.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 7: Summary matrix -->
+    <section class="slide slide-matrix">
+      <div class="slide-inner">
+        <div class="slide-number">06</div>
+        <div class="slide-label">Summary</div>
+        <h2>Where Everyone Stands</h2>
+
+        <div class="matrix-wrap">
+          <div class="matrix-row matrix-header">
+            <div class="matrix-cell matrix-name-col">Framework</div>
+            <div class="matrix-cell">Brain never sees secrets</div>
+            <div class="matrix-cell">Customer-owned control plane</div>
+            <div class="matrix-cell">Scoped actuator boundary</div>
+            <div class="matrix-cell">Prompt injection defense</div>
+          </div>
+          <div class="matrix-row">
+            <div class="matrix-cell matrix-name-col matrix-name-us"><strong>Botsters</strong></div>
+            <div class="matrix-cell matrix-yes">✓ Structural</div>
+            <div class="matrix-cell matrix-yes">✓ Customer-owned Spine</div>
+            <div class="matrix-cell matrix-yes">✓ Registered Actuators</div>
+            <div class="matrix-cell matrix-partial">◑ In development</div>
+          </div>
+          <div class="matrix-row">
+            <div class="matrix-cell matrix-name-col">IronClaw (NEAR AI)</div>
+            <div class="matrix-cell matrix-yes">✓ Host boundary</div>
+            <div class="matrix-cell matrix-no">✗ Vendor TEE (NEAR AI)</div>
+            <div class="matrix-cell matrix-no">✗ No actuator concept</div>
+            <div class="matrix-cell matrix-yes">✓ Pattern detection</div>
+          </div>
+          <div class="matrix-row">
+            <div class="matrix-cell matrix-name-col">IronClaw (ironclaw.tech)</div>
+            <div class="matrix-cell matrix-no">✗ Policy only</div>
+            <div class="matrix-cell matrix-no">✗ Vendor-managed</div>
+            <div class="matrix-cell matrix-partial">◑ Policy-gated</div>
+            <div class="matrix-cell matrix-partial">◑ Implied</div>
+          </div>
+          <div class="matrix-row">
+            <div class="matrix-cell matrix-name-col">OpenClaw</div>
+            <div class="matrix-cell matrix-no">✗ Env vars exposed</div>
+            <div class="matrix-cell matrix-no">✗ None</div>
+            <div class="matrix-cell matrix-no">✗ None</div>
+            <div class="matrix-cell matrix-no">✗ None</div>
+          </div>
+          <div class="matrix-row">
+            <div class="matrix-cell matrix-name-col">LangChain / CrewAI</div>
+            <div class="matrix-cell matrix-no">✗ Developer's problem</div>
+            <div class="matrix-cell matrix-no">✗ None</div>
+            <div class="matrix-cell matrix-no">✗ None</div>
+            <div class="matrix-cell matrix-no">✗ None</div>
+          </div>
+          <div class="matrix-row">
+            <div class="matrix-cell matrix-name-col">AutoGen / Semantic Kernel</div>
+            <div class="matrix-cell matrix-no">✗ Env / Azure</div>
+            <div class="matrix-cell matrix-partial">◑ Azure-native only</div>
+            <div class="matrix-cell matrix-partial">◑ Docker / Azure</div>
+            <div class="matrix-cell matrix-partial">◑ Azure Defender</div>
+          </div>
+        </div>
+
+        <div class="matrix-note">
+          ✓ Structural &nbsp;·&nbsp; ◑ Partial / Policy-based &nbsp;·&nbsp; ✗ Absent or developer-owned
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 8: Conclusion -->
+    <section class="slide slide-conclusion">
+      <div class="slide-inner slide-inner-center">
+        <div class="slide-number">07</div>
+        <div class="slide-label">Conclusion</div>
+        <h2>The Gap</h2>
+
+        <div class="conclusion-body">
+          <p>No framework in the current landscape combines all three properties structurally:</p>
+          <ul class="conclusion-list">
+            <li>Secrets the brain cannot see — enforced by architecture, not configuration</li>
+            <li>A control plane the <em>customer</em> owns and installs</li>
+            <li>A registered, scoped execution boundary on customer machines</li>
+          </ul>
+          <p>IronClaw (NEAR AI) is the closest — structural credential injection at the host boundary — but trust is delegated to NEAR AI's cloud, not the customer. Enterprise variants (IronClaw.tech, Semantic Kernel) add compliance layers over fundamentally unchanged trust models.</p>
+          <p class="conclusion-callout">Botsters is the only architecture where the answer to "why attack?" is structural, not aspirational.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .pitch-page {
+    background: var(--color-bg);
+  }
+
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+  }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .slide-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.4) 20%, rgba(255,107,53,0.4) 80%, transparent);
+    margin: 0 2rem;
+  }
+
+  .slide-number {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(255,107,53,0.15);
+    margin-bottom: -1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .slide-label {
+    font-size: 1.56rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .slide h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 2.5rem;
+    background: linear-gradient(135deg, var(--color-text) 60%, var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Title slide */
+  .slide-title {
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 60%, rgba(255,107,53,0.07) 0%, transparent 70%);
+  }
+
+  .slide-eyebrow {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .company-name {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.25rem;
+  }
+
+  .tagline {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .research-date {
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: var(--color-text-dim, rgba(255,255,255,0.3));
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Question slide */
+  .slide-question {
+    background: radial-gradient(ellipse at 40% 60%, rgba(255,107,53,0.05) 0%, transparent 60%);
+  }
+
+  .question-body p {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .question-lead {
+    font-size: 1.1rem !important;
+    color: var(--color-text) !important;
+  }
+
+  .question-axes {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .question-axes li {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .question-axes li strong { color: var(--color-text); }
+
+  /* Competitor slides */
+  .slide-competitor {
+    background: radial-gradient(ellipse at 60% 40%, rgba(255,107,53,0.04) 0%, transparent 60%);
+  }
+
+  .comp-by {
+    font-size: 0.55em;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    -webkit-text-fill-color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .comp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .comp-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .comp-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+
+  .comp-tag-oss      { color: #4ade80; border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.08); }
+  .comp-tag-personal { color: #94a3b8; border-color: rgba(148,163,184,0.3); background: rgba(148,163,184,0.07); }
+  .comp-tag-rust     { color: #fb923c; border-color: rgba(251,146,60,0.4); background: rgba(251,146,60,0.08); }
+  .comp-tag-tee      { color: #c084fc; border-color: rgba(192,132,252,0.4); background: rgba(192,132,252,0.08); }
+  .comp-tag-commercial { color: #fbbf24; border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); }
+  .comp-tag-enterprise { color: #38bdf8; border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.08); }
+  .comp-tag-services { color: #94a3b8; border-color: rgba(148,163,184,0.3); background: rgba(148,163,184,0.07); }
+  .comp-tag-framework { color: #94a3b8; border-color: rgba(148,163,184,0.3); background: rgba(148,163,184,0.07); }
+  .comp-tag-ms       { color: #38bdf8; border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.08); }
+
+  .comp-verdict {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.35rem 1rem;
+    border-radius: 8px;
+    border: 1px solid;
+  }
+
+  .comp-verdict-bad     { color: #ef4444; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.07); }
+  .comp-verdict-partial { color: var(--color-amber); border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.07); }
+  .comp-verdict-good    { color: #4ade80; border-color: rgba(74,222,128,0.35); background: rgba(74,222,128,0.07); }
+
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .comp-col {
+    padding: 1.5rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    border-radius: 12px;
+  }
+
+  .comp-col h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem;
+  }
+
+  .comp-col p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .comp-findings {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .finding {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    border: 1px solid;
+    align-items: flex-start;
+  }
+
+  .finding-good { border-color: rgba(74,222,128,0.25); background: rgba(74,222,128,0.05); }
+  .finding-warn { border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.05); }
+  .finding-bad  { border-color: rgba(239,68,68,0.25);  background: rgba(239,68,68,0.05);  }
+
+  .finding-icon { font-size: 1.2rem; flex-shrink: 0; line-height: 1.4; }
+
+  .finding-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .finding-desc {
+    font-size: 0.825rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  /* Ecosystem slide */
+  .slide-ecosystem {
+    background: radial-gradient(ellipse at 50% 50%, rgba(56,189,248,0.04) 0%, transparent 60%);
+  }
+
+  .eco-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .eco-card {
+    padding: 1.5rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+  }
+
+  .eco-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+  }
+
+  .eco-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+
+  .eco-verdict {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  .eco-bad     { color: #ef4444; background: rgba(239,68,68,0.1); }
+  .eco-partial { color: var(--color-amber); background: rgba(245,158,11,0.1); }
+  .eco-good    { color: #4ade80; background: rgba(74,222,128,0.1); }
+
+  .eco-card p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Matrix slide */
+  .slide-matrix {
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.05) 0%, transparent 65%);
+  }
+
+  .matrix-wrap {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .matrix-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .matrix-row:last-child { border-bottom: none; }
+
+  .matrix-header {
+    background: var(--color-bg-secondary);
+  }
+
+  .matrix-cell {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    border-right: 1px solid var(--border-muted);
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+  }
+
+  .matrix-cell:last-child { border-right: none; }
+
+  .matrix-header .matrix-cell {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+  }
+
+  .matrix-name-col { font-weight: 600; color: var(--color-text); }
+  .matrix-name-us  { color: var(--color-accent) !important; background: rgba(255,107,53,0.04); }
+
+  .matrix-yes     { color: #4ade80; font-weight: 600; }
+  .matrix-partial { color: var(--color-amber); font-weight: 600; }
+  .matrix-no      { color: #ef4444; font-weight: 600; }
+
+  .matrix-note {
+    font-size: 0.78rem;
+    color: var(--color-text-dim, rgba(255,255,255,0.3));
+    text-align: center;
+  }
+
+  /* Conclusion */
+  .slide-conclusion {
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.09) 0%, transparent 65%);
+    text-align: center;
+  }
+
+  .slide-inner-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .conclusion-body {
+    max-width: 680px;
+    text-align: left;
+  }
+
+  .conclusion-body p {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .conclusion-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .conclusion-list li {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .conclusion-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 900;
+  }
+
+  .conclusion-callout {
+    padding: 1.5rem 2rem;
+    border: 1px solid rgba(255,107,53,0.35);
+    border-radius: 14px;
+    background: rgba(255,107,53,0.06);
+    font-size: 1.1rem !important;
+    font-weight: 700;
+    color: var(--color-text) !important;
+    font-style: italic;
+    line-height: 1.5 !important;
+    text-align: center;
+  }
+
+  @media (max-width: 700px) {
+    .comp-grid, .eco-grid { grid-template-columns: 1fr; }
+    .comp-header { flex-direction: column; align-items: flex-start; }
+    .matrix-row { grid-template-columns: 1fr; }
+    .matrix-cell { border-right: none; border-bottom: 1px solid var(--border-muted); }
+    .matrix-header .matrix-cell:first-child { display: none; }
+  }
+</style>

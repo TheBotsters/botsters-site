@@ -1,19 +1,9 @@
-import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-interface FeedbackData {
-  name: string | null;
-  email: string | null;
-  category: string;
-  message: string;
-  section?: string | null;
-  mailing_list?: boolean;
-}
-
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST = async ({ request, locals }) => {
   try {
-    const data: FeedbackData = await request.json();
+    const data = await request.json();
 
     // Validate required fields
     if (!data.category || !data.message) {
@@ -84,7 +74,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 };
 
 // Simple hash for IP (privacy - don't store raw IPs)
-function hashIP(ip: string): string {
+function hashIP(ip) {
   let hash = 0;
   for (let i = 0; i < ip.length; i++) {
     const char = ip.charCodeAt(i);

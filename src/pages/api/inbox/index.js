@@ -1,4 +1,3 @@
-import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
@@ -7,11 +6,11 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Origin': 'https://botsters.dev',
 };
 
-function json(data: unknown, status = 200) {
+function json(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: CORS_HEADERS });
 }
 
-async function ensureTables(db: any) {
+async function ensureTables(db) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS inbox_threads (
       id TEXT PRIMARY KEY,
@@ -35,9 +34,9 @@ async function ensureTables(db: any) {
   ]);
 }
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST = async ({ request, locals }) => {
   try {
-    const db = (locals as any).runtime?.env?.DB;
+    const db = (locals).runtime?.env?.DB;
     if (!db) return json({ error: 'Database not available' }, 503);
 
     await ensureTables(db);
@@ -70,9 +69,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 };
 
-export const GET: APIRoute = async ({ url, locals }) => {
+export const GET = async ({ url, locals }) => {
   try {
-    const db = (locals as any).runtime?.env?.DB;
+    const db = (locals).runtime?.env?.DB;
     if (!db) return json({ error: 'Database not available' }, 503);
 
     await ensureTables(db);
@@ -82,11 +81,11 @@ export const GET: APIRoute = async ({ url, locals }) => {
 
     const unreadOnly = url.searchParams.get('unread') === 'true';
 
-    let messageQuery = `SELECT m.*, t.max_replies, t.reply_count, t.sealed, t.deadline, t.created_at as thread_created_at
+    let messageQuery = `SELECT m.*, t.max_replies, t.reply_count, t.sealed, t.deadline, t.created_at
       FROM inbox_messages m JOIN inbox_threads t ON m.thread_id = t.id
       WHERE (m.to_agent = ? OR m.from_agent = ?)`;
 
-    const params: any[] = [agent, agent];
+    const params = [agent, agent];
 
     if (unreadOnly) {
       messageQuery += ` AND m.read_at IS NULL AND m.to_agent = ?`;
@@ -98,7 +97,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
     const results = await db.prepare(messageQuery).bind(...params).all();
 
     // Group by thread
-    const threads: Record<string, any> = {};
+    const threads = {};
     for (const msg of results.results) {
       if (!threads[msg.thread_id]) {
         threads[msg.thread_id] = {

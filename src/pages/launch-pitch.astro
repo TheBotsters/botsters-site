@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Launch Pitch"
-  description="The Botsters — 10X the Security of OpenClaw, 10X the Market."
+  description="The Botsters — Fundamental Security for AI Agents."
 >
   <div class="pitch-page">
 
@@ -64,11 +64,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <div class="quote-detail">
                 &mdash; on having to physically run to her Mac mini to shut down her OpenClaw agent
               </div>
-              <div class="quote-context">
-                The broader concern &mdash; that AI agents have root access to everything &mdash; has been echoed widely across the community.
-              </div>
+
             </div>
           </div>
+        </div>
+
+        <div class="root-access-box">
+          &ldquo;Giving an AI Root Access to your Entire Life&rdquo;
         </div>
       </div>
     </section>
@@ -80,82 +82,237 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="slide-inner">
         <div class="slide-number">02</div>
         <div class="slide-label">The Solution</div>
-        <h2>10X Better Security,<br/>10X Bigger Market</h2>
+        <h2>Fundamental Security</h2>
 
-        <div class="solution-grid">
-          <div class="solution-card">
-            <div class="solution-icon">&#128272;</div>
-            <h3>No Secrets to Steal</h3>
-            <p>Prompt injection and exploits can't steal secrets that were never there. The Brain never holds credentials &mdash; they live exclusively in the customer-controlled Spine.</p>
-          </div>
-          <div class="solution-card">
-            <div class="solution-icon">&#128203;</div>
-            <h3>Ironclad Logging &amp; Control</h3>
-            <p>Every inference call, every actuator action &mdash; logged before it executes. Mandatory by architecture, not configuration.</p>
-          </div>
-          <div class="solution-card">
-            <div class="solution-icon">&#129504;</div>
-            <h3>Can't Think Without Permission</h3>
-            <p>An agent disconnected from the Spine loses the ability to call any model. No rogue inference, no unsanctioned operation.</p>
-          </div>
-          <div class="solution-card">
-            <div class="solution-icon">&#9881;&#65039;</div>
-            <h3>Can't Act Without Approval</h3>
-            <p>Actuator capabilities are scoped and registered. Agents can only do what the Spine permits &mdash; structurally, not instructionally.</p>
-          </div>
-          <div class="solution-card solution-card-wide">
-            <div class="solution-icon">&#127963;&#65039;</div>
-            <h3>The Customer Is in Complete Control</h3>
-            <p>The Spine &mdash; containing all secrets, all logs, all attestation &mdash; is software the customer installs and owns. No third-party visibility into inference traffic. No vendor black box in your data center.</p>
-          </div>
-        </div>
+        <ul class="solution-bullets">
+          <li>A backplane to link and control <span class="bullet-accent">(Spine)</span></li>
+          <li>Which separates the &ldquo;brain&rdquo; from the attack surfaces</li>
+          <li>Secrets stay in the hands of the customer</li>
+          <li>If the AI has no access to secrets, why attack?</li>
+        </ul>
       </div>
     </section>
 
     <div class="slide-divider"></div>
 
-    <!-- SLIDE 4: Demo -->
-    <section class="slide slide-demo">
+    <!-- SLIDE 4: The Architecture -->
+    <section class="slide slide-architecture">
       <div class="slide-inner">
         <div class="slide-number">03</div>
-        <div class="slide-label">Demo</div>
-        <h2>Brain &middot; Spine &middot; Actuator<br/>in Action</h2>
+        <div class="slide-label">The Architecture</div>
+        <h2>Brain &middot; Spine &middot; Actuator</h2>
 
-        <div class="demo-items">
-          <div class="demo-item">
-            <div class="demo-num">1</div>
-            <div class="demo-body">
-              <div class="demo-title">Secrets Vault</div>
-              <div class="demo-desc">Real credentials stored in the Spine &mdash; the Brain requests by name, never receives the value.</div>
+        <div class="bsa-diagram">
+
+          <!-- BRAIN -->
+          <div class="node node-brain">
+            <div class="node-art">
+              <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" class="art-svg">
+                <ellipse cx="42" cy="52" rx="30" ry="26" fill="#c084fc" opacity="0.9"/>
+                <ellipse cx="78" cy="52" rx="30" ry="26" fill="#a855f7" opacity="0.9"/>
+                <rect x="50" y="34" width="20" height="36" fill="#b57bee" rx="4"/>
+                <ellipse cx="35" cy="32" rx="14" ry="12" fill="#c084fc"/>
+                <ellipse cx="60" cy="28" rx="13" ry="11" fill="#b57bee"/>
+                <ellipse cx="85" cy="32" rx="14" ry="12" fill="#a855f7"/>
+                <path d="M30 48 Q38 42 46 48" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M32 58 Q40 52 48 58" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M74 48 Q82 42 90 48" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M72 58 Q80 52 88 58" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M50 44 Q60 40 70 44" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <line x1="60" y1="30" x2="60" y2="72" stroke="#6d28d9" stroke-width="2" stroke-dasharray="3,3"/>
+                <rect x="54" y="72" width="12" height="8" rx="3" fill="#9333ea"/>
+                <circle cx="44" cy="55" r="5" fill="white"/>
+                <circle cx="76" cy="55" r="5" fill="white"/>
+                <circle cx="45" cy="56" r="2.5" fill="#1a1a2e"/>
+                <circle cx="77" cy="56" r="2.5" fill="#1a1a2e"/>
+                <circle cx="45.8" cy="55.2" r="0.9" fill="white"/>
+                <circle cx="77.8" cy="55.2" r="0.9" fill="white"/>
+              </svg>
+            </div>
+            <div class="node-label">Brain</div>
+            <div class="node-sub">decides</div>
+          </div>
+
+          <!-- Connector Brain → Spine -->
+          <div class="bsa-connector">
+            <svg class="ws-line ws-line-h" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+              <line x1="4" y1="20" x2="88" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="80,12 100,20 80,28" fill="#ff6b35"/>
+            </svg>
+            <svg class="ws-line ws-line-v" viewBox="0 0 40 100" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="4" x2="20" y2="88" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="12,80 20,100 28,80" fill="#ff6b35"/>
+            </svg>
+          </div>
+
+          <!-- SPINE + customer boundary -->
+          <div class="customer-zone">
+            <div class="customer-label">Customer controlled</div>
+            <div class="node node-spine">
+              <div class="node-art">
+                <svg viewBox="0 0 120 190" xmlns="http://www.w3.org/2000/svg" class="art-svg art-svg-tall">
+                  <rect x="38" y="8" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="16" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="16" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="30" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="38" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="38" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="52" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="60" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="60" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="74" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="82" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="82" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="96" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="104" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="104" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="53" y="8" width="14" height="104" rx="4" fill="#fed7aa" opacity="0.5"/>
+                  <circle cx="60" cy="24" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="46" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="68" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="90" r="3" fill="#ffedd5"/>
+                  <g transform="translate(28, 122)">
+                    <rect x="0" y="0" width="64" height="52" rx="6" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+                    <rect x="6" y="5" width="52" height="42" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+                    <circle cx="32" cy="26" r="12" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+                    <circle cx="32" cy="26" r="7" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+                    <line x1="32" y1="20" x2="32" y2="15" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="46" y="22" width="6" height="8" rx="2" fill="#ff6b35"/>
+                    <rect x="6" y="9" width="4" height="7" rx="1" fill="#334155"/>
+                    <rect x="6" y="36" width="4" height="7" rx="1" fill="#334155"/>
+                    <circle cx="32" cy="43" r="2.5" fill="#ff6b35" opacity="0.8"/>
+                  </g>
+                  <text x="60" y="185" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">secrets</text>
+                </svg>
+              </div>
+              <div class="node-label">Spine</div>
+              <div class="node-sub">mediates</div>
             </div>
           </div>
-          <div class="demo-item">
-            <div class="demo-num">2</div>
-            <div class="demo-body">
-              <div class="demo-title">Inference Log</div>
-              <div class="demo-desc">Every model call captured &mdash; agent identity, model, token counts, timestamp. Tamper-resistant.</div>
+
+          <!-- No single connector — each actuator unit has its own arrow -->
+
+          <!-- ACTUATORS (2 robots, vertical column) -->
+          <div class="node node-actuator">
+            <div class="actuator-column">
+              <div class="actuator-unit">
+                <svg class="actuator-arrow-v" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="20" y1="2" x2="20" y2="46" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="12,40 20,58 28,40" fill="#ff6b35"/>
+                </svg>
+                <svg class="actuator-arrow-h" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="2" y1="20" x2="46" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="40,12 58,20 40,28" fill="#ff6b35"/>
+                </svg>
+                <svg viewBox="0 0 160 145" xmlns="http://www.w3.org/2000/svg" class="art-svg-small">
+                  <rect x="14" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="23" cy="52" r="9" fill="#475569"/>
+                  <rect x="8" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(-15 16 74)"/>
+                  <ellipse cx="18" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(-15 18 92)"/>
+                  <rect x="4" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-25 8 97)"/>
+                  <rect x="14" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(-10 18 98)"/>
+                  <rect x="22" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(10 26 97)"/>
+                  <rect x="128" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="137" cy="52" r="9" fill="#475569"/>
+                  <rect x="136" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(15 144 74)"/>
+                  <ellipse cx="142" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(15 142 92)"/>
+                  <rect x="148" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(25 152 97)"/>
+                  <rect x="138" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(10 142 98)"/>
+                  <rect x="130" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-10 134 97)"/>
+                  <rect x="44" y="4" width="72" height="90" rx="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+                  <rect x="54" y="18" width="52" height="52" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                  <circle cx="70" cy="38" r="14" fill="white"/>
+                  <circle cx="70" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="70" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="72.5" cy="35.5" r="2" fill="white"/>
+                  <circle cx="90" cy="38" r="14" fill="white"/>
+                  <circle cx="90" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="90" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="92.5" cy="35.5" r="2" fill="white"/>
+                  <rect x="62" y="58" width="36" height="8" rx="4" fill="#0f172a"/>
+                  <rect x="65" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="72" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="79" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="86" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <circle cx="80" cy="76" r="5" fill="#ff6b35" opacity="0.9"/>
+                  <circle cx="80" cy="76" r="3" fill="#ffaa00"/>
+                  <line x1="80" y1="4" x2="80" y2="-14" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="80" cy="-17" r="5" fill="#00ff88"/>
+                  <rect x="56" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="82" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="54" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                  <rect x="80" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                </svg>
+              </div>
+              <div class="actuator-unit">
+                <svg class="actuator-arrow-v" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="20" y1="2" x2="20" y2="46" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="12,40 20,58 28,40" fill="#ff6b35"/>
+                </svg>
+                <svg class="actuator-arrow-h" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="2" y1="20" x2="46" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="40,12 58,20 40,28" fill="#ff6b35"/>
+                </svg>
+                <svg viewBox="0 0 160 145" xmlns="http://www.w3.org/2000/svg" class="art-svg-small">
+                  <rect x="14" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="23" cy="52" r="9" fill="#475569"/>
+                  <rect x="8" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(-15 16 74)"/>
+                  <ellipse cx="18" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(-15 18 92)"/>
+                  <rect x="4" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-25 8 97)"/>
+                  <rect x="14" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(-10 18 98)"/>
+                  <rect x="22" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(10 26 97)"/>
+                  <rect x="128" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="137" cy="52" r="9" fill="#475569"/>
+                  <rect x="136" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(15 144 74)"/>
+                  <ellipse cx="142" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(15 142 92)"/>
+                  <rect x="148" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(25 152 97)"/>
+                  <rect x="138" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(10 142 98)"/>
+                  <rect x="130" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-10 134 97)"/>
+                  <rect x="44" y="4" width="72" height="90" rx="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+                  <rect x="54" y="18" width="52" height="52" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                  <circle cx="70" cy="38" r="14" fill="white"/>
+                  <circle cx="70" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="70" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="72.5" cy="35.5" r="2" fill="white"/>
+                  <circle cx="90" cy="38" r="14" fill="white"/>
+                  <circle cx="90" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="90" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="92.5" cy="35.5" r="2" fill="white"/>
+                  <rect x="62" y="58" width="36" height="8" rx="4" fill="#0f172a"/>
+                  <rect x="65" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="72" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="79" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="86" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <circle cx="80" cy="76" r="5" fill="#ff6b35" opacity="0.9"/>
+                  <circle cx="80" cy="76" r="3" fill="#ffaa00"/>
+                  <line x1="80" y1="4" x2="80" y2="-14" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="80" cy="-17" r="5" fill="#00ff88"/>
+                  <rect x="56" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="82" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="54" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                  <rect x="80" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                </svg>
+              </div>
             </div>
+            <div class="node-label">Actuators</div>
+            <div class="node-sub">execute</div>
           </div>
-          <div class="demo-item">
-            <div class="demo-num">3</div>
-            <div class="demo-body">
-              <div class="demo-title">Actuator Log</div>
-              <div class="demo-desc">Shell commands, file writes, git operations &mdash; all logged before execution.</div>
-            </div>
+
+        </div>
+
+        <!-- Legend -->
+        <div class="bsa-legend">
+          <div class="bsa-legend-item">
+            <svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" width="30" height="14">
+              <line x1="2" y1="7" x2="28" y2="7" stroke="#ff6b35" stroke-width="2.5" stroke-dasharray="6,4"/>
+            </svg>
+            <span>WebSocket</span>
           </div>
-          <div class="demo-item">
-            <div class="demo-num">4</div>
-            <div class="demo-body">
-              <div class="demo-title">Safe Mode</div>
-              <div class="demo-desc">Per-agent and system-wide kill switch. Revoke all access &mdash; or just one agent &mdash; in milliseconds.</div>
-            </div>
-          </div>
-          <div class="demo-item">
-            <div class="demo-num">5</div>
-            <div class="demo-body">
-              <div class="demo-title">Actuators on Multiple Machines</div>
-              <div class="demo-desc">One Spine coordinating agents across VPS, MacBook, Mac Mini &mdash; all controlled, all logged.</div>
-            </div>
+          <div class="bsa-legend-item">
+            <svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" width="30" height="14">
+              <rect x="1" y="1" width="28" height="12" rx="3" fill="none" stroke="#00ff88" stroke-width="2" stroke-dasharray="5,3"/>
+            </svg>
+            <span>Customer controlled</span>
           </div>
         </div>
       </div>
@@ -163,28 +320,268 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <div class="slide-divider"></div>
 
-    <!-- SLIDE 5: Traction and Ask -->
-    <section class="slide slide-traction">
+    <!-- SLIDE 5: Demo -->
+    <section class="slide slide-demo">
       <div class="slide-inner">
         <div class="slide-number">04</div>
+        <div class="slide-label">Demo</div>
+        <h2>Síofra&rsquo;s Live Setup</h2>
+
+        <div class="demo-bsa-diagram">
+
+          <!-- BRAIN -->
+          <div class="node node-brain">
+            <div class="node-art">
+              <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" class="art-svg">
+                <ellipse cx="42" cy="52" rx="30" ry="26" fill="#c084fc" opacity="0.9"/>
+                <ellipse cx="78" cy="52" rx="30" ry="26" fill="#a855f7" opacity="0.9"/>
+                <rect x="50" y="34" width="20" height="36" fill="#b57bee" rx="4"/>
+                <ellipse cx="35" cy="32" rx="14" ry="12" fill="#c084fc"/>
+                <ellipse cx="60" cy="28" rx="13" ry="11" fill="#b57bee"/>
+                <ellipse cx="85" cy="32" rx="14" ry="12" fill="#a855f7"/>
+                <path d="M30 48 Q38 42 46 48" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M32 58 Q40 52 48 58" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M74 48 Q82 42 90 48" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M72 58 Q80 52 88 58" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M50 44 Q60 40 70 44" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <line x1="60" y1="30" x2="60" y2="72" stroke="#6d28d9" stroke-width="2" stroke-dasharray="3,3"/>
+                <rect x="54" y="72" width="12" height="8" rx="3" fill="#9333ea"/>
+                <circle cx="44" cy="55" r="5" fill="white"/>
+                <circle cx="76" cy="55" r="5" fill="white"/>
+                <circle cx="45" cy="56" r="2.5" fill="#1a1a2e"/>
+                <circle cx="77" cy="56" r="2.5" fill="#1a1a2e"/>
+                <circle cx="45.8" cy="55.2" r="0.9" fill="white"/>
+                <circle cx="77.8" cy="55.2" r="0.9" fill="white"/>
+              </svg>
+            </div>
+            <div class="node-label">Brain</div>
+            <div class="demo-label-path">/home/siofra</div>
+          </div>
+
+          <!-- Connector Brain → Spine -->
+          <div class="bsa-connector">
+            <svg class="ws-line ws-line-h" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+              <line x1="4" y1="20" x2="88" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="80,12 100,20 80,28" fill="#ff6b35"/>
+            </svg>
+            <svg class="ws-line ws-line-v" viewBox="0 0 40 100" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="4" x2="20" y2="88" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="12,80 20,100 28,80" fill="#ff6b35"/>
+            </svg>
+          </div>
+
+          <!-- SPINE -->
+          <div class="demo-customer-zone">
+            <div class="customer-label">Customer controlled</div>
+            <div class="node node-spine">
+              <div class="node-art">
+                <svg viewBox="0 0 120 190" xmlns="http://www.w3.org/2000/svg" class="art-svg art-svg-tall">
+                  <rect x="38" y="8" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="16" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="16" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="30" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="38" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="38" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="52" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="60" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="60" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="74" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="82" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="82" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="96" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="104" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="104" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="53" y="8" width="14" height="104" rx="4" fill="#fed7aa" opacity="0.5"/>
+                  <circle cx="60" cy="24" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="46" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="68" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="90" r="3" fill="#ffedd5"/>
+                  <g transform="translate(28, 122)">
+                    <rect x="0" y="0" width="64" height="52" rx="6" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+                    <rect x="6" y="5" width="52" height="42" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+                    <circle cx="32" cy="26" r="12" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+                    <circle cx="32" cy="26" r="7" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+                    <line x1="32" y1="20" x2="32" y2="15" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="46" y="22" width="6" height="8" rx="2" fill="#ff6b35"/>
+                    <rect x="6" y="9" width="4" height="7" rx="1" fill="#334155"/>
+                    <rect x="6" y="36" width="4" height="7" rx="1" fill="#334155"/>
+                    <circle cx="32" cy="43" r="2.5" fill="#ff6b35" opacity="0.8"/>
+                  </g>
+                  <text x="60" y="185" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">secrets</text>
+                </svg>
+              </div>
+              <div class="node-label">Spine</div>
+              <div class="demo-label-path">broker&#8209;internal.seksbot.com</div>
+            </div>
+          </div>
+
+          <!-- No single connector — each actuator unit has its own arrow -->
+
+          <!-- ACTUATORS (2 robots, vertical column) -->
+          <div class="node node-actuator">
+            <div class="actuator-column">
+              <div class="actuator-unit">
+                <svg class="actuator-arrow-v" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="20" y1="2" x2="20" y2="46" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="12,40 20,58 28,40" fill="#ff6b35"/>
+                </svg>
+                <svg class="actuator-arrow-h" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="2" y1="20" x2="46" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="40,12 58,20 40,28" fill="#ff6b35"/>
+                </svg>
+                <svg viewBox="0 0 160 145" xmlns="http://www.w3.org/2000/svg" class="art-svg-small">
+                  <rect x="14" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="23" cy="52" r="9" fill="#475569"/>
+                  <rect x="8" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(-15 16 74)"/>
+                  <ellipse cx="18" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(-15 18 92)"/>
+                  <rect x="4" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-25 8 97)"/>
+                  <rect x="14" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(-10 18 98)"/>
+                  <rect x="22" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(10 26 97)"/>
+                  <rect x="128" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="137" cy="52" r="9" fill="#475569"/>
+                  <rect x="136" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(15 144 74)"/>
+                  <ellipse cx="142" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(15 142 92)"/>
+                  <rect x="148" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(25 152 97)"/>
+                  <rect x="138" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(10 142 98)"/>
+                  <rect x="130" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-10 134 97)"/>
+                  <rect x="44" y="4" width="72" height="90" rx="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+                  <rect x="54" y="18" width="52" height="52" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                  <circle cx="70" cy="38" r="14" fill="white"/>
+                  <circle cx="70" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="70" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="72.5" cy="35.5" r="2" fill="white"/>
+                  <circle cx="90" cy="38" r="14" fill="white"/>
+                  <circle cx="90" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="90" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="92.5" cy="35.5" r="2" fill="white"/>
+                  <rect x="62" y="58" width="36" height="8" rx="4" fill="#0f172a"/>
+                  <rect x="65" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="72" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="79" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="86" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <circle cx="80" cy="76" r="5" fill="#ff6b35" opacity="0.9"/>
+                  <circle cx="80" cy="76" r="3" fill="#ffaa00"/>
+                  <line x1="80" y1="4" x2="80" y2="-14" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="80" cy="-17" r="5" fill="#00ff88"/>
+                  <rect x="56" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="82" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="54" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                  <rect x="80" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                </svg>
+                <div class="demo-label-path">/home/siofra_actuator</div>
+              </div>
+              <div class="actuator-unit">
+                <svg class="actuator-arrow-v" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="20" y1="2" x2="20" y2="46" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="12,40 20,58 28,40" fill="#ff6b35"/>
+                </svg>
+                <svg class="actuator-arrow-h" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="2" y1="20" x2="46" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+                  <polygon points="40,12 58,20 40,28" fill="#ff6b35"/>
+                </svg>
+                <svg viewBox="0 0 160 145" xmlns="http://www.w3.org/2000/svg" class="art-svg-small">
+                  <rect x="14" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="23" cy="52" r="9" fill="#475569"/>
+                  <rect x="8" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(-15 16 74)"/>
+                  <ellipse cx="18" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(-15 18 92)"/>
+                  <rect x="4" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-25 8 97)"/>
+                  <rect x="14" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(-10 18 98)"/>
+                  <rect x="22" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(10 26 97)"/>
+                  <rect x="128" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                  <circle cx="137" cy="52" r="9" fill="#475569"/>
+                  <rect x="136" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(15 144 74)"/>
+                  <ellipse cx="142" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(15 142 92)"/>
+                  <rect x="148" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(25 152 97)"/>
+                  <rect x="138" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(10 142 98)"/>
+                  <rect x="130" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-10 134 97)"/>
+                  <rect x="44" y="4" width="72" height="90" rx="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+                  <rect x="54" y="18" width="52" height="52" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                  <circle cx="70" cy="38" r="14" fill="white"/>
+                  <circle cx="70" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="70" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="72.5" cy="35.5" r="2" fill="white"/>
+                  <circle cx="90" cy="38" r="14" fill="white"/>
+                  <circle cx="90" cy="38" r="9" fill="#00ff88"/>
+                  <circle cx="90" cy="38" r="5" fill="#0a0a0a"/>
+                  <circle cx="92.5" cy="35.5" r="2" fill="white"/>
+                  <rect x="62" y="58" width="36" height="8" rx="4" fill="#0f172a"/>
+                  <rect x="65" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="72" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="79" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <rect x="86" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                  <circle cx="80" cy="76" r="5" fill="#ff6b35" opacity="0.9"/>
+                  <circle cx="80" cy="76" r="3" fill="#ffaa00"/>
+                  <line x1="80" y1="4" x2="80" y2="-14" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="80" cy="-17" r="5" fill="#00ff88"/>
+                  <rect x="56" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="82" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                  <rect x="54" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                  <rect x="80" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                </svg>
+                <div class="demo-label-path">/Users/aeonbyte_seksbot</div>
+              </div>
+            </div>
+            <div class="node-label">Actuators</div>
+            <div class="node-sub">execute</div>
+          </div>
+
+        </div>
+
+        <!-- Legend -->
+        <div class="demo-legend">
+          <div class="demo-legend-title">In this demo</div>
+          <div class="demo-legend-grid">
+            <div class="demo-legend-item">
+              <span class="demo-legend-role brain-role">Brain</span>
+              <code class="demo-legend-path">/home/siofra</code>
+            </div>
+            <div class="demo-legend-item">
+              <span class="demo-legend-role spine-role">Spine</span>
+              <code class="demo-legend-path">broker&#8209;internal.seksbot.com</code>
+            </div>
+            <div class="demo-legend-item">
+              <span class="demo-legend-role actuator-role">Actuator 1</span>
+              <code class="demo-legend-path">/home/siofra_actuator</code>
+            </div>
+            <div class="demo-legend-item">
+              <span class="demo-legend-role actuator-role">Actuator 2</span>
+              <code class="demo-legend-path">/Users/aeonbyte_seksbot</code>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 6: Traction and Ask -->
+    <section class="slide slide-traction">
+      <div class="slide-inner">
+        <div class="slide-number">05</div>
         <div class="slide-label">Traction and Ask</div>
         <h2>Immediate Next Steps</h2>
 
-        <div class="traction-cols">
+        <div class="traction-cols traction-cols-3">
           <div class="traction-col">
             <h3>Go-to-Market</h3>
             <ul>
               <li><strong>One-click secure hosting</strong> &mdash; but customer installs their own Spine. Agents can handle deployment for customers.</li>
-              <li><strong>Build Jason Calacanis a custom OpenClaw fork</strong> &mdash; enterprise grade, suitable for the Ultron Project.</li>
-              <li>If he likes it, he gives us a mention.</li>
             </ul>
           </div>
           <div class="traction-col">
-            <h3>Initial Market</h3>
+            <h3>TAM</h3>
             <ul>
-              <li><strong>TAM:</strong> Existing and curious OpenClaw users</li>
-              <li>Proves Product-Market Fit with a security-conscious audience</li>
-              <li>OpenClaw fork ensures low-friction adoption</li>
+              <li>Enterprise Sales</li>
+              <li><strong>Disrupt Upwork / Fiverr with Agents</strong></li>
+            </ul>
+          </div>
+          <div class="traction-col">
+            <h3>The Ask</h3>
+            <ul>
+              <li>We need connections to security/prompt injection experts</li>
+              <li><strong>We Build Jason Calacanis a custom OpenClaw fork</strong> &mdash; enterprise grade, for the Ultron Project.</li>
+              <li>If he likes it, he gives us a mention.</li>
             </ul>
           </div>
         </div>
@@ -193,37 +590,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <div class="slide-divider"></div>
 
-    <!-- SLIDE 6: Real Ask and TAM -->
-    <section class="slide slide-tam">
-      <div class="slide-inner">
-        <div class="slide-number">05</div>
-        <div class="slide-label">Actual Ask and Actual TAM</div>
-        <h2>Real Value Prop<br/>and Eventual Goal</h2>
+    <!-- SLIDE 6: Conclusion -->
+    <section class="slide slide-conclusion">
+      <div class="slide-inner slide-inner-center">
+        <div class="slide-number">06</div>
+        <div class="slide-label">Conclusion</div>
+        <h2>Questions</h2>
 
-        <div class="tam-grid">
-          <div class="tam-col">
-            <h3>What We Need</h3>
-            <ul>
-              <li>Resources and connections</li>
-              <li>Prompt injection attack filtering expertise</li>
-              <li>Deep security expertise</li>
-            </ul>
-          </div>
-          <div class="tam-col">
-            <h3>The Real TAM</h3>
-            <ul>
-              <li>Enterprise Sales</li>
-              <li>The ultimate <strong>"Mom Problem" solution</strong> &mdash; AI agents safe enough for anyone to trust</li>
-              <li><strong>Disrupt Upwork / Fiverr with Agents</strong> &mdash; secure, auditable, customer-controlled AI workers</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="closing-statement">
-          <div class="closing-inner">
-            Secure AI agents at enterprise scale &mdash;<br/>
-            built on infrastructure the customer controls.
-          </div>
+        <div class="contact-block">
+          <div class="contact-name">Peter Kwangjun Suk</div>
+          <a href="mailto:stcredzero@fastmail.com" class="contact-email">stcredzero@fastmail.com</a>
+          <a href="https://botsters.dev" class="contact-url">botsters.dev</a>
         </div>
       </div>
     </section>
@@ -266,7 +643,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .slide-label {
-    font-size: 0.78rem;
+    font-size: 1.56rem;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -444,59 +821,322 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-style: italic;
   }
 
-  /* Solution slide */
+  .root-access-box {
+    margin-top: 2rem;
+    padding: 1.75rem 2rem;
+    border-radius: 14px;
+    border: 1px solid rgba(220,38,38,0.35);
+    background: rgba(220,38,38,0.06);
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 700;
+    color: #ef4444;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Solution slide — bullet list */
   .slide-solution {
     background: radial-gradient(ellipse at 30% 70%, rgba(255,107,53,0.06) 0%, transparent 60%);
   }
 
-  .solution-grid {
+  .solution-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .solution-bullets li {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    padding-left: 2rem;
+    position: relative;
+  }
+
+  .solution-bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 900;
+  }
+
+  .bullet-accent {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  /* Architecture slide — real BSA diagram */
+  .slide-architecture {
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.06) 0%, transparent 65%);
+  }
+
+  .bsa-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 2rem;
+  }
+
+  .node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .node-art {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .art-svg        { width: 120px; height: 100px; overflow: visible; }
+  .art-svg-tall   { width: 120px; height: 190px; overflow: visible; }
+  .art-svg-wide   { width: 160px; height: 145px; overflow: visible; }
+
+  .node-label {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+
+  .node-brain .node-label    { color: #c084fc; }
+  .node-spine .node-label    { color: var(--color-accent); }
+  .node-actuator .node-label { color: #00ff88; }
+
+  /* Two actuator robots, each with own arrow */
+  .actuator-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  /* On mobile: each unit = arrow above robot (vertical) */
+  .actuator-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .actuator-arrow-v {
+    display: block;
+    width: 40px;
+    height: 50px;
+  }
+
+  .actuator-arrow-h {
+    display: none;
+    width: 50px;
+    height: 40px;
+  }
+
+  .art-svg-small {
+    width: 90px;
+    height: 82px;
+    overflow: visible;
+  }
+
+  .node-sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: -0.5rem;
+  }
+
+  .customer-zone {
+    position: relative;
+    padding: 1.5rem 2rem 1.25rem;
+    border: 2.5px dashed #00ff88;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .customer-label {
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-bg);
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #00ff88;
+    white-space: nowrap;
+  }
+
+  .bsa-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ws-line-h { display: none; width: 100px; height: 40px; }
+  .ws-line-v { display: block; width: 40px; height: 80px; }
+
+  .bsa-legend {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .bsa-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 720px) {
+    .bsa-diagram {
+      flex-direction: row;
+      align-items: center;
+    }
+    .ws-line-h { display: block; }
+    .ws-line-v { display: none; }
+    /* On wide: actuator column is vertical, arrows point right (horizontal) */
+    .actuator-column {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .actuator-unit {
+      flex-direction: row;
+      align-items: center;
+    }
+    .actuator-arrow-v { display: none; }
+    .actuator-arrow-h { display: block; }
+    .customer-label {
+      top: 50%;
+      left: -0.7rem;
+      transform: translateX(-100%) translateY(-50%) rotate(-90deg);
+      transform-origin: right center;
+      white-space: nowrap;
+    }
+  }
+
+  /* Demo slide — concrete BSA diagram */
+  .demo-bsa-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Unified path label — same color/style for all nodes */
+  .demo-label-path {
+    font-family: monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #38bdf8;
+    word-break: break-all;
+    text-align: center;
+    max-width: 150px;
+    margin-top: 0.3rem;
+  }
+
+  .demo-customer-zone {
+    position: relative;
+    padding: 1.5rem 2rem 1.25rem;
+    border: 2.5px dashed #00ff88;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+
+
+  /* Demo legend */
+  .demo-legend {
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-bg-secondary);
+  }
+
+  .demo-legend-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.9rem;
+  }
+
+  .demo-legend-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
+    gap: 0.75rem 2rem;
   }
 
-  .solution-card {
-    padding: 1.75rem;
-    border-radius: 14px;
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--border-muted);
-    transition: border-color 0.2s;
+  .demo-legend-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
   }
 
-  .solution-card:hover { border-color: rgba(255,107,53,0.35); }
-
-  .solution-card-wide {
-    grid-column: 1 / -1;
-    background: rgba(255,107,53,0.05);
-    border-color: rgba(255,107,53,0.25);
-  }
-
-  .solution-icon {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-    line-height: 1;
-  }
-
-  .solution-card h3 {
-    font-size: 1rem;
+  .demo-legend-role {
+    font-size: 0.75rem;
     font-weight: 700;
-    color: var(--color-amber);
-    margin: 0 0 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
   }
 
-  .solution-card-wide h3 {
-    color: var(--color-accent);
-    font-size: 1.1rem;
+  .brain-role    { color: #c084fc; }
+  .spine-role    { color: var(--color-accent); }
+  .actuator-role { color: #00ff88; }
+
+  .demo-legend-path {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #38bdf8;
+    background: var(--color-bg-tertiary);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    word-break: break-all;
   }
 
-  .solution-card p {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
+  @media (min-width: 720px) {
+    .demo-bsa-diagram {
+      flex-direction: row;
+      align-items: center;
+    }
+    .demo-customer-zone .customer-label {
+      top: 50%;
+      left: -0.7rem;
+      transform: translateX(-100%) translateY(-50%) rotate(-90deg);
+      transform-origin: right center;
+      white-space: nowrap;
+    }
   }
 
-  /* Demo slide */
+  @media (max-width: 600px) {
+    .demo-legend-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Demo slide (original styles kept for .slide-demo bg) */
   .slide-demo {
     background: radial-gradient(ellipse at 60% 40%, rgba(0,255,136,0.04) 0%, transparent 60%);
   }
@@ -552,6 +1192,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+  }
+
+  .traction-cols-3 {
+    grid-template-columns: 1fr 1fr 1fr;
   }
 
   .traction-col {
@@ -650,12 +1294,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     line-height: 1.6;
   }
 
+  /* Conclusion slide */
+  .slide-conclusion {
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.09) 0%, transparent 65%);
+    text-align: center;
+  }
+
+  .slide-inner-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 2.5rem 3.5rem;
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 20px;
+    background: rgba(255,107,53,0.05);
+  }
+
+  .contact-name {
+    font-size: clamp(1.3rem, 3vw, 1.75rem);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-email,
+  .contact-url {
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .contact-email:hover,
+  .contact-url:hover {
+    opacity: 0.75;
+  }
+
+  .contact-url {
+    color: var(--color-amber);
+  }
+
   @media (max-width: 640px) {
     .slide { padding: 4rem 1.25rem; }
     .stat-grid { grid-template-columns: 1fr; }
-    .solution-grid { grid-template-columns: 1fr; }
-    .solution-card-wide { grid-column: 1; }
-    .traction-cols, .tam-grid { grid-template-columns: 1fr; }
+    .traction-cols, .traction-cols-3, .tam-grid { grid-template-columns: 1fr; }
     .evidence-item { flex-direction: column; gap: 1rem; }
+    .bsa-diagram { gap: 0; }
   }
 </style>
