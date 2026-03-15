@@ -95,76 +95,188 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <div class="slide-divider"></div>
 
-    <!-- SLIDE 03: Solution — BSA Diagram -->
+    <!-- SLIDE 03: Solution — BSA Diagram (from architecture.astro) -->
     <section class="slide slide-solution">
       <div class="slide-inner">
         <div class="slide-number">03</div>
         <div class="slide-label">Solution</div>
         <h2>Brain &middot; Spine &middot; Actuator</h2>
 
-        <div class="bsa-diagram">
+        <div class="diagram">
 
-          <!-- Brain -->
-          <div class="bsa-node bsa-brain">
-            <div class="bsa-node-icon">&#129504;</div>
-            <div class="bsa-node-name">Brain</div>
-            <div class="bsa-node-sub">The AI Agent</div>
-            <ul class="bsa-node-facts">
-              <li>Runs inference (Claude, GPT, etc.)</li>
-              <li>Never holds credentials</li>
-              <li>Can't act without Spine permission</li>
-            </ul>
-          </div>
-
-          <!-- Arrow Brain → Spine -->
-          <div class="bsa-arrow">
-            <div class="bsa-arrow-line"></div>
-            <div class="bsa-arrow-labels">
-              <span class="bsa-arrow-label">secret name only &rarr;</span>
-              <span class="bsa-arrow-label">&larr; proxied response</span>
+          <!-- BRAIN -->
+          <div class="node node-brain">
+            <div class="node-art">
+              <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" class="art-svg">
+                <ellipse cx="42" cy="52" rx="30" ry="26" fill="#c084fc" opacity="0.9"/>
+                <ellipse cx="78" cy="52" rx="30" ry="26" fill="#a855f7" opacity="0.9"/>
+                <rect x="50" y="34" width="20" height="36" fill="#b57bee" rx="4"/>
+                <ellipse cx="35" cy="32" rx="14" ry="12" fill="#c084fc"/>
+                <ellipse cx="60" cy="28" rx="13" ry="11" fill="#b57bee"/>
+                <ellipse cx="85" cy="32" rx="14" ry="12" fill="#a855f7"/>
+                <path d="M30 48 Q38 42 46 48" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M32 58 Q40 52 48 58" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M74 48 Q82 42 90 48" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M72 58 Q80 52 88 58" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M50 44 Q60 40 70 44" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <line x1="60" y1="30" x2="60" y2="72" stroke="#6d28d9" stroke-width="2" stroke-dasharray="3,3"/>
+                <rect x="54" y="72" width="12" height="8" rx="3" fill="#9333ea"/>
+                <circle cx="44" cy="55" r="5" fill="white"/>
+                <circle cx="76" cy="55" r="5" fill="white"/>
+                <circle cx="45" cy="56" r="2.5" fill="#1a1a2e"/>
+                <circle cx="77" cy="56" r="2.5" fill="#1a1a2e"/>
+                <circle cx="45.8" cy="55.2" r="0.9" fill="white"/>
+                <circle cx="77.8" cy="55.2" r="0.9" fill="white"/>
+              </svg>
             </div>
-            <div class="bsa-arrow-head">&#9660;</div>
+            <div class="node-label">Brain</div>
+            <div class="node-sub">decides</div>
           </div>
 
-          <!-- Spine -->
-          <div class="bsa-node bsa-spine">
-            <div class="bsa-node-icon">&#128272;</div>
-            <div class="bsa-node-name">Spine</div>
-            <div class="bsa-node-sub">Customer-Controlled Security Layer</div>
-            <ul class="bsa-node-facts">
-              <li>Holds all secrets &amp; credentials</li>
-              <li>Logs every inference call</li>
-              <li>Grants or revokes agent access</li>
-              <li>Attestation &amp; audit trail</li>
-            </ul>
+          <!-- WS connector Brain → Spine -->
+          <div class="connector">
+            <svg class="ws-line ws-line-h" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+              <line x1="4" y1="20" x2="88" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="80,12 100,20 80,28" fill="#ff6b35"/>
+            </svg>
+            <svg class="ws-line ws-line-v" viewBox="0 0 40 100" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="4" x2="20" y2="88" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="12,80 20,100 28,80" fill="#ff6b35"/>
+            </svg>
           </div>
 
-          <!-- Arrow Spine → Actuator -->
-          <div class="bsa-arrow">
-            <div class="bsa-arrow-line"></div>
-            <div class="bsa-arrow-labels">
-              <span class="bsa-arrow-label">approved action &rarr;</span>
-              <span class="bsa-arrow-label">&larr; result log</span>
+          <!-- SPINE + customer boundary -->
+          <div class="customer-zone">
+            <div class="customer-label">Customer controlled</div>
+            <div class="node node-spine">
+              <div class="node-art">
+                <svg viewBox="0 0 120 190" xmlns="http://www.w3.org/2000/svg" class="art-svg art-svg-tall">
+                  <!-- vertebrae -->
+                  <rect x="38" y="8" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="16" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="16" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="30" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="38" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="38" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="52" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="60" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="60" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="74" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="82" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="82" rx="11" ry="7" fill="#f97316"/>
+                  <rect x="38" y="96" width="44" height="16" rx="6" fill="#fb923c"/>
+                  <ellipse cx="28" cy="104" rx="11" ry="7" fill="#f97316"/>
+                  <ellipse cx="92" cy="104" rx="11" ry="7" fill="#f97316"/>
+                  <!-- spinal cord -->
+                  <rect x="53" y="8" width="14" height="104" rx="4" fill="#fed7aa" opacity="0.5"/>
+                  <circle cx="60" cy="24" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="46" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="68" r="3" fill="#ffedd5"/>
+                  <circle cx="60" cy="90" r="3" fill="#ffedd5"/>
+                  <!-- safe / secrets vault -->
+                  <g transform="translate(28, 122)">
+                    <rect x="0" y="0" width="64" height="52" rx="6" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+                    <rect x="6" y="5" width="52" height="42" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+                    <circle cx="32" cy="26" r="12" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+                    <circle cx="32" cy="26" r="7" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+                    <line x1="32" y1="20" x2="32" y2="15" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="46" y="22" width="6" height="8" rx="2" fill="#ff6b35"/>
+                    <rect x="6" y="9" width="4" height="7" rx="1" fill="#334155"/>
+                    <rect x="6" y="36" width="4" height="7" rx="1" fill="#334155"/>
+                    <circle cx="32" cy="43" r="2.5" fill="#ff6b35" opacity="0.8"/>
+                  </g>
+                  <!-- safe label -->
+                  <text x="60" y="185" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">secrets</text>
+                </svg>
+              </div>
+              <div class="node-label">Spine</div>
+              <div class="node-sub">mediates</div>
             </div>
-            <div class="bsa-arrow-head">&#9660;</div>
           </div>
 
-          <!-- Actuator -->
-          <div class="bsa-node bsa-actuator">
-            <div class="bsa-node-icon">&#9881;&#65039;</div>
-            <div class="bsa-node-name">Actuator</div>
-            <div class="bsa-node-sub">The Executor</div>
-            <ul class="bsa-node-facts">
-              <li>Runs shell, git, browser, APIs</li>
-              <li>Scoped capabilities only</li>
-              <li>All actions logged before execution</li>
-            </ul>
+          <!-- WS connector Spine → Actuator -->
+          <div class="connector">
+            <svg class="ws-line ws-line-h" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+              <line x1="4" y1="20" x2="88" y2="20" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="80,12 100,20 80,28" fill="#ff6b35"/>
+            </svg>
+            <svg class="ws-line ws-line-v" viewBox="0 0 40 100" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="4" x2="20" y2="88" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+              <polygon points="12,80 20,100 28,80" fill="#ff6b35"/>
+            </svg>
+          </div>
+
+          <!-- ACTUATOR -->
+          <div class="node node-actuator">
+            <div class="node-art">
+              <svg viewBox="0 0 160 145" xmlns="http://www.w3.org/2000/svg" class="art-svg art-svg-wide">
+                <!-- left arm -->
+                <rect x="14" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                <circle cx="23" cy="52" r="9" fill="#475569"/>
+                <rect x="8" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(-15 16 74)"/>
+                <ellipse cx="18" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(-15 18 92)"/>
+                <rect x="4" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-25 8 97)"/>
+                <rect x="14" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(-10 18 98)"/>
+                <rect x="22" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(10 26 97)"/>
+                <!-- right arm -->
+                <rect x="128" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+                <circle cx="137" cy="52" r="9" fill="#475569"/>
+                <rect x="136" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(15 144 74)"/>
+                <ellipse cx="142" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(15 142 92)"/>
+                <rect x="148" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(25 152 97)"/>
+                <rect x="138" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(10 142 98)"/>
+                <rect x="130" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-10 134 97)"/>
+                <!-- body -->
+                <rect x="44" y="4" width="72" height="90" rx="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+                <rect x="54" y="18" width="52" height="52" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <!-- eyes -->
+                <circle cx="70" cy="38" r="14" fill="white"/>
+                <circle cx="70" cy="38" r="9" fill="#00ff88"/>
+                <circle cx="70" cy="38" r="5" fill="#0a0a0a"/>
+                <circle cx="72.5" cy="35.5" r="2" fill="white"/>
+                <circle cx="90" cy="38" r="14" fill="white"/>
+                <circle cx="90" cy="38" r="9" fill="#00ff88"/>
+                <circle cx="90" cy="38" r="5" fill="#0a0a0a"/>
+                <circle cx="92.5" cy="35.5" r="2" fill="white"/>
+                <!-- mouth -->
+                <rect x="62" y="58" width="36" height="8" rx="4" fill="#0f172a"/>
+                <rect x="65" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                <rect x="72" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                <rect x="79" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                <rect x="86" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+                <!-- chest light -->
+                <circle cx="80" cy="76" r="5" fill="#ff6b35" opacity="0.9"/>
+                <circle cx="80" cy="76" r="3" fill="#ffaa00"/>
+                <!-- antenna -->
+                <line x1="80" y1="4" x2="80" y2="-14" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="80" cy="-17" r="5" fill="#00ff88"/>
+                <!-- legs -->
+                <rect x="56" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                <rect x="82" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+                <rect x="54" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+                <rect x="80" y="108" width="26" height="18" rx="5" fill="#1e293b"/>
+              </svg>
+            </div>
+            <div class="node-label">Actuator</div>
+            <div class="node-sub">executes</div>
           </div>
 
         </div>
 
-        <div class="bsa-insight">
-          <strong>The Key Insight:</strong> Secrets never touch the Brain. The Brain can't act without the Spine. The Actuator can only do what the Spine permits. Security is architectural &mdash; not instructional.
+        <!-- Legend -->
+        <div class="legend">
+          <div class="legend-item">
+            <svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" width="30" height="14">
+              <line x1="2" y1="7" x2="28" y2="7" stroke="#ff6b35" stroke-width="2.5" stroke-dasharray="6,4"/>
+            </svg>
+            <span>WebSocket</span>
+          </div>
+          <div class="legend-item">
+            <svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" width="30" height="14">
+              <rect x="1" y="1" width="28" height="12" rx="3" fill="none" stroke="#00ff88" stroke-width="2" stroke-dasharray="5,3"/>
+            </svg>
+            <span>Customer controlled</span>
+          </div>
         </div>
 
       </div>
@@ -188,7 +300,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .slide-inner {
     width: 100%;
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
   }
 
@@ -400,10 +512,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* ───── SLIDE 03: Solution / BSA Diagram ───── */
   .slide-solution {
-    background: radial-gradient(ellipse at 30% 60%, rgba(255,107,53,0.06) 0%, transparent 65%);
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.05) 0%, transparent 65%);
   }
 
-  .bsa-diagram {
+  /* Diagram — vertical on mobile, horizontal on wide */
+  .diagram {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -411,139 +524,115 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: 2.5rem;
   }
 
-  .bsa-node {
-    width: 100%;
-    max-width: 540px;
-    padding: 2rem 2.25rem;
-    border-radius: 18px;
-    border: 2px solid var(--border-muted);
-    background: var(--color-bg-secondary);
-    position: relative;
-  }
-
-  .bsa-brain {
-    border-color: rgba(192,132,252,0.4);
-    background: rgba(192,132,252,0.05);
-  }
-
-  .bsa-spine {
-    border-color: rgba(255,107,53,0.45);
-    background: rgba(255,107,53,0.06);
-  }
-
-  .bsa-actuator {
-    border-color: rgba(34,197,94,0.4);
-    background: rgba(34,197,94,0.05);
-  }
-
-  .bsa-node-icon {
-    font-size: 2.25rem;
-    margin-bottom: 0.5rem;
-    line-height: 1;
-  }
-
-  .bsa-node-name {
-    font-size: 1.6rem;
-    font-weight: 900;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.2rem;
-  }
-
-  .bsa-brain .bsa-node-name   { color: #c084fc; }
-  .bsa-spine .bsa-node-name   { color: var(--color-accent); }
-  .bsa-actuator .bsa-node-name { color: #4ade80; }
-
-  .bsa-node-sub {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-muted);
-    margin-bottom: 1.25rem;
-  }
-
-  .bsa-node-facts {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .bsa-node-facts li {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    padding-left: 1.1rem;
-    position: relative;
-    line-height: 1.4;
-  }
-
-  .bsa-node-facts li::before {
-    content: '›';
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-    font-weight: 700;
-  }
-
-  /* Arrows between nodes */
-  .bsa-arrow {
+  .node {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    width: 100%;
-    max-width: 540px;
-    padding: 0.25rem 0;
+    gap: 0.75rem;
   }
 
-  .bsa-arrow-line {
-    width: 2px;
-    height: 52px;
-    background: linear-gradient(180deg, rgba(255,107,53,0.25), rgba(255,107,53,0.6));
-  }
-
-  .bsa-arrow-head {
-    color: rgba(255,107,53,0.6);
-    font-size: 1.1rem;
-    line-height: 1;
-    margin-top: -5px;
-  }
-
-  .bsa-arrow-labels {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
+  .node-art {
     display: flex;
-    justify-content: space-between;
-    pointer-events: none;
+    justify-content: center;
+    align-items: center;
   }
 
-  .bsa-arrow-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--color-text-dim, rgba(255,255,255,0.28));
-    white-space: nowrap;
-    padding: 0 1rem;
+  .art-svg        { width: 120px; height: 100px; overflow: visible; }
+  .art-svg-tall   { width: 120px; height: 190px; overflow: visible; }
+  .art-svg-wide   { width: 160px; height: 145px; overflow: visible; }
+
+  .node-label {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
   }
 
-  /* Bottom callout */
-  .bsa-insight {
-    padding: 1.5rem 2rem;
-    border-radius: 14px;
-    background: rgba(255,107,53,0.06);
-    border: 1px solid rgba(255,107,53,0.25);
-    font-size: 0.92rem;
+  .node-brain .node-label    { color: #c084fc; }
+  .node-spine .node-label    { color: var(--color-accent); }
+  .node-actuator .node-label { color: var(--color-success, #00ff88); }
+
+  .node-sub {
+    font-size: 0.85rem;
     color: var(--color-text-muted);
-    line-height: 1.65;
-    text-align: center;
-    max-width: 640px;
-    margin: 0 auto;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: -0.5rem;
   }
 
-  .bsa-insight strong { color: var(--color-accent); }
+  /* Customer zone — dashed green boundary */
+  .customer-zone {
+    position: relative;
+    padding: 1.5rem 2rem 1.25rem;
+    border: 2.5px dashed #00ff88;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .customer-label {
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-bg);
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #00ff88;
+    white-space: nowrap;
+  }
+
+  /* Connectors */
+  .connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ws-line-h { display: none; width: 100px; height: 40px; }
+  .ws-line-v { display: block; width: 40px; height: 80px; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* Wide layout — horizontal diagram */
+  @media (min-width: 720px) {
+    .diagram {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ws-line-h { display: block; }
+    .ws-line-v { display: none; }
+
+    .customer-label {
+      top: 50%;
+      left: -0.7rem;
+      transform: translateX(-100%) translateY(-50%) rotate(-90deg);
+      transform-origin: right center;
+      white-space: nowrap;
+    }
+  }
 
   @media (max-width: 640px) {
     .slide { padding: 4rem 1.25rem; }
@@ -551,7 +640,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .customer-card-wide { grid-column: 1; }
     .stat-grid { grid-template-columns: 1fr; }
     .evidence-item { flex-direction: column; gap: 1rem; }
-    .bsa-arrow-labels { display: none; }
-    .bsa-node { padding: 1.5rem; }
   }
 </style>
