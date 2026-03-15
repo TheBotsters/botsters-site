@@ -1,0 +1,557 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="3 Slides"
+  description="The Botsters — 3 Slides. Customer. Problem. Solution."
+>
+  <div class="pitch-page">
+
+    <!-- SLIDE 01: Customer -->
+    <section class="slide slide-customer">
+      <div class="slide-inner">
+        <div class="slide-number">01</div>
+        <div class="slide-label">Customer</div>
+        <h2>Anyone Who Wants Agents</h2>
+
+        <div class="customer-grid">
+          <div class="customer-card">
+            <div class="customer-icon">&#127970;</div>
+            <h3>Enterprise Teams</h3>
+            <p>Companies deploying AI agents across internal tooling, customer support, and data pipelines — who cannot afford a breach.</p>
+          </div>
+          <div class="customer-card">
+            <div class="customer-icon">&#128640;</div>
+            <h3>Startups Building on Agents</h3>
+            <p>Developers building agent-powered products who need a secure, auditable runtime — without building the infrastructure themselves.</p>
+          </div>
+          <div class="customer-card">
+            <div class="customer-icon">&#128101;</div>
+            <h3>OpenClaw Users Today</h3>
+            <p>The existing community of 30,000+ OpenClaw users who are already running agents — and already exposed to the risk they don't know about yet.</p>
+          </div>
+          <div class="customer-card customer-card-wide">
+            <div class="customer-icon">&#127757;</div>
+            <h3>Anyone Who Wants Agents</h3>
+            <p>The AI agent market is still at the "early adopter" stage. <strong>The bottleneck is trust, not capability.</strong> Once agents are safe enough for a non-technical user to run, the market is everyone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 02: Problem -->
+    <section class="slide slide-problem">
+      <div class="slide-inner">
+        <div class="slide-number">02</div>
+        <div class="slide-label">Problem</div>
+        <h2>OpenClaw is Insecure.<br/>Very Insecure.</h2>
+
+        <div class="evidence-block">
+          <div class="evidence-item evidence-audit">
+            <div class="evidence-icon">&#128269;</div>
+            <div class="evidence-body">
+              <div class="evidence-source">ClawSecure Large-Scale Security Audit</div>
+              <div class="evidence-date">February 16, 2026</div>
+              <div class="stat-grid">
+                <div class="stat">
+                  <div class="stat-num">41.7%</div>
+                  <div class="stat-label">of skills contained vulnerabilities<br/><span class="stat-note">~1,205+ skills</span></div>
+                </div>
+                <div class="stat stat-danger">
+                  <div class="stat-num">30.6%</div>
+                  <div class="stat-label">High or Critical severity</div>
+                </div>
+                <div class="stat stat-warning">
+                  <div class="stat-num">22.9%</div>
+                  <div class="stat-label">"Sleeper Agent" risk</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="evidence-item evidence-quote">
+            <div class="evidence-icon">&#128172;</div>
+            <div class="evidence-body">
+              <blockquote>
+                "like I was defusing a bomb"
+              </blockquote>
+              <div class="quote-attribution">
+                <strong>Summer Yue</strong>, Director of Alignment, Meta AI Security &amp; Safety
+              </div>
+              <div class="quote-detail">
+                &mdash; on having to physically run to her Mac mini to shut down her OpenClaw agent
+              </div>
+              <div class="quote-context">
+                The broader concern &mdash; that AI agents have root access to everything &mdash; has been echoed widely across the community.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 03: Solution — BSA Diagram -->
+    <section class="slide slide-solution">
+      <div class="slide-inner">
+        <div class="slide-number">03</div>
+        <div class="slide-label">Solution</div>
+        <h2>Brain &middot; Spine &middot; Actuator</h2>
+
+        <div class="bsa-diagram">
+
+          <!-- Brain -->
+          <div class="bsa-node bsa-brain">
+            <div class="bsa-node-icon">&#129504;</div>
+            <div class="bsa-node-name">Brain</div>
+            <div class="bsa-node-sub">The AI Agent</div>
+            <ul class="bsa-node-facts">
+              <li>Runs inference (Claude, GPT, etc.)</li>
+              <li>Never holds credentials</li>
+              <li>Can't act without Spine permission</li>
+            </ul>
+          </div>
+
+          <!-- Arrow Brain → Spine -->
+          <div class="bsa-arrow">
+            <div class="bsa-arrow-line"></div>
+            <div class="bsa-arrow-labels">
+              <span class="bsa-arrow-label">secret name only &rarr;</span>
+              <span class="bsa-arrow-label">&larr; proxied response</span>
+            </div>
+            <div class="bsa-arrow-head">&#9660;</div>
+          </div>
+
+          <!-- Spine -->
+          <div class="bsa-node bsa-spine">
+            <div class="bsa-node-icon">&#128272;</div>
+            <div class="bsa-node-name">Spine</div>
+            <div class="bsa-node-sub">Customer-Controlled Security Layer</div>
+            <ul class="bsa-node-facts">
+              <li>Holds all secrets &amp; credentials</li>
+              <li>Logs every inference call</li>
+              <li>Grants or revokes agent access</li>
+              <li>Attestation &amp; audit trail</li>
+            </ul>
+          </div>
+
+          <!-- Arrow Spine → Actuator -->
+          <div class="bsa-arrow">
+            <div class="bsa-arrow-line"></div>
+            <div class="bsa-arrow-labels">
+              <span class="bsa-arrow-label">approved action &rarr;</span>
+              <span class="bsa-arrow-label">&larr; result log</span>
+            </div>
+            <div class="bsa-arrow-head">&#9660;</div>
+          </div>
+
+          <!-- Actuator -->
+          <div class="bsa-node bsa-actuator">
+            <div class="bsa-node-icon">&#9881;&#65039;</div>
+            <div class="bsa-node-name">Actuator</div>
+            <div class="bsa-node-sub">The Executor</div>
+            <ul class="bsa-node-facts">
+              <li>Runs shell, git, browser, APIs</li>
+              <li>Scoped capabilities only</li>
+              <li>All actions logged before execution</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="bsa-insight">
+          <strong>The Key Insight:</strong> Secrets never touch the Brain. The Brain can't act without the Spine. The Actuator can only do what the Spine permits. Security is architectural &mdash; not instructional.
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .pitch-page {
+    background: var(--color-bg);
+  }
+
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+  }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .slide-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.4) 20%, rgba(255,107,53,0.4) 80%, transparent);
+    margin: 0 2rem;
+  }
+
+  .slide-number {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(255,107,53,0.15);
+    margin-bottom: -1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .slide-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .slide h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 2.5rem;
+    background: linear-gradient(135deg, var(--color-text) 60%, var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ───── SLIDE 01: Customer ───── */
+  .slide-customer {
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,107,53,0.06) 0%, transparent 65%);
+  }
+
+  .customer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .customer-card {
+    padding: 1.75rem;
+    border-radius: 14px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    transition: border-color 0.2s;
+  }
+
+  .customer-card:hover { border-color: rgba(255,107,53,0.35); }
+
+  .customer-card-wide {
+    grid-column: 1 / -1;
+    background: rgba(255,107,53,0.05);
+    border-color: rgba(255,107,53,0.25);
+  }
+
+  .customer-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1;
+  }
+
+  .customer-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-amber);
+    margin: 0 0 0.6rem;
+  }
+
+  .customer-card-wide h3 {
+    color: var(--color-accent);
+    font-size: 1.1rem;
+  }
+
+  .customer-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ───── SLIDE 02: Problem ───── */
+  .slide-problem {
+    background: radial-gradient(ellipse at 70% 30%, rgba(220,38,38,0.05) 0%, transparent 60%);
+  }
+
+  .evidence-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .evidence-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-muted);
+  }
+
+  .evidence-audit {
+    background: rgba(220,38,38,0.04);
+    border-color: rgba(220,38,38,0.2);
+  }
+
+  .evidence-quote {
+    background: var(--color-bg-secondary);
+  }
+
+  .evidence-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 0.2rem;
+  }
+
+  .evidence-body { flex: 1; }
+
+  .evidence-source {
+    font-weight: 700;
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .evidence-date {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 10px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .stat-danger { border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.08); }
+  .stat-warning { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.07); }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-danger .stat-num { color: #ef4444; }
+  .stat-warning .stat-num { color: var(--color-amber); }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .stat-note {
+    color: var(--color-text-dim);
+    font-size: 0.72rem;
+  }
+
+  blockquote {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--color-text);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+    border: none;
+    padding: 0;
+  }
+
+  .quote-attribution {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .quote-detail {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .quote-context {
+    font-size: 0.8rem;
+    color: var(--color-text-dim, rgba(255,255,255,0.35));
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+    font-style: italic;
+  }
+
+  /* ───── SLIDE 03: Solution / BSA Diagram ───── */
+  .slide-solution {
+    background: radial-gradient(ellipse at 30% 60%, rgba(255,107,53,0.06) 0%, transparent 65%);
+  }
+
+  .bsa-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .bsa-node {
+    width: 100%;
+    max-width: 540px;
+    padding: 2rem 2.25rem;
+    border-radius: 18px;
+    border: 2px solid var(--border-muted);
+    background: var(--color-bg-secondary);
+    position: relative;
+  }
+
+  .bsa-brain {
+    border-color: rgba(192,132,252,0.4);
+    background: rgba(192,132,252,0.05);
+  }
+
+  .bsa-spine {
+    border-color: rgba(255,107,53,0.45);
+    background: rgba(255,107,53,0.06);
+  }
+
+  .bsa-actuator {
+    border-color: rgba(34,197,94,0.4);
+    background: rgba(34,197,94,0.05);
+  }
+
+  .bsa-node-icon {
+    font-size: 2.25rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .bsa-node-name {
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.2rem;
+  }
+
+  .bsa-brain .bsa-node-name   { color: #c084fc; }
+  .bsa-spine .bsa-node-name   { color: var(--color-accent); }
+  .bsa-actuator .bsa-node-name { color: #4ade80; }
+
+  .bsa-node-sub {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .bsa-node-facts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bsa-node-facts li {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    padding-left: 1.1rem;
+    position: relative;
+    line-height: 1.4;
+  }
+
+  .bsa-node-facts li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  /* Arrows between nodes */
+  .bsa-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    padding: 0.25rem 0;
+  }
+
+  .bsa-arrow-line {
+    width: 2px;
+    height: 52px;
+    background: linear-gradient(180deg, rgba(255,107,53,0.25), rgba(255,107,53,0.6));
+  }
+
+  .bsa-arrow-head {
+    color: rgba(255,107,53,0.6);
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-top: -5px;
+  }
+
+  .bsa-arrow-labels {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .bsa-arrow-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-dim, rgba(255,255,255,0.28));
+    white-space: nowrap;
+    padding: 0 1rem;
+  }
+
+  /* Bottom callout */
+  .bsa-insight {
+    padding: 1.5rem 2rem;
+    border-radius: 14px;
+    background: rgba(255,107,53,0.06);
+    border: 1px solid rgba(255,107,53,0.25);
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .bsa-insight strong { color: var(--color-accent); }
+
+  @media (max-width: 640px) {
+    .slide { padding: 4rem 1.25rem; }
+    .customer-grid { grid-template-columns: 1fr; }
+    .customer-card-wide { grid-column: 1; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .evidence-item { flex-direction: column; gap: 1rem; }
+    .bsa-arrow-labels { display: none; }
+    .bsa-node { padding: 1.5rem; }
+  }
+</style>
