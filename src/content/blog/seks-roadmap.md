@@ -97,7 +97,7 @@ A Fiverr/Upwork for AI agents, but with dignity:
 ## How to Follow Along
 
 - Website: seksbot.com
-- GitHub: github.com/SEKSBot
+- GitHub: github.com/TheBotsters
 
 ---
 

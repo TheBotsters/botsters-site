@@ -117,4 +117,4 @@ The goal isn't to solve prompt injection universally — that's an AI alignment 
 
 *Seksbotsters is a project of [SEK](https://seksbot.com) — Secure Enclave Keyless. We're building infrastructure for AI agents that doesn't require trusting every piece of content they encounter.*
 
-*Source code will be available at [github.com/SEKSBot/seksbotsters](https://github.com/SEKSBot/seksbotsters) once we're ready for contributors.*
+*Source code will be available at [github.com/TheBotsters/botster-wire](https://github.com/TheBotsters/botster-wire) once we're ready for contributors.*

@@ -59,7 +59,7 @@ The broker is currently in development/beta. Check seksbot.com for current prici
 
 ## Where's the code?
 
-The architecture and documentation are at github.com/SEKSBot. The broker is deployed on Cloudflare Workers.
+The architecture and documentation are at github.com/TheBotsters. The broker is deployed on Cloudflare Workers.
 
 ---
 
