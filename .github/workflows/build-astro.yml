@@ -1,0 +1,41 @@
+# build-astro.yml — Verify Astro production build passes
+# TODO(security): Pin action refs to commit SHAs before Phase F cutover.
+name: build-astro
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-astro:
+    name: Build (Astro)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro site
+        run: npm run build
+
+      - name: Verify dist output exists
+        run: |
+          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+            echo "::error::Build produced no output in dist/"
+            exit 1
+          fi
+          echo "Build output present: $(find dist -type f | wc -l) files"
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+          retention-days: 7
