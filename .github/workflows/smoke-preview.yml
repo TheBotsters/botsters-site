@@ -1,0 +1,70 @@
+# smoke-preview.yml — Smoke test the built site against key routes
+# Serves dist/ locally and checks HTTP responses for critical pages.
+# For full CF Pages preview integration, wire CF_API_TOKEN in Phase F.
+name: smoke-preview
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  smoke-preview:
+    name: Smoke test (built site)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Install serve
+        run: npm install -g serve
+
+      - name: Start local server
+        run: serve -s dist -l 4000 &
+        shell: bash
+
+      - name: Wait for server
+        run: sleep 3
+
+      - name: Smoke test critical routes
+        run: |
+          BASE="http://localhost:4000"
+          FAIL=0
+
+          check_route() {
+            local path="$1"
+            local expected_status="${2:-200}"
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$BASE$path")
+            if [ "$STATUS" = "$expected_status" ]; then
+              echo "  ✅ $path → $STATUS"
+            else
+              echo "  ❌ $path → $STATUS (expected $expected_status)"
+              FAIL=1
+            fi
+          }
+
+          echo "Checking critical routes..."
+          check_route "/"
+          check_route "/about"
+          check_route "/security"
+          check_route "/faq"
+          check_route "/roadmap"
+          check_route "/software"
+
+          if [ $FAIL -ne 0 ]; then
+            echo ""
+            echo "::error::Smoke tests failed — one or more critical routes returned unexpected status."
+            exit 1
+          fi
+          echo ""
+          echo "All smoke tests passed."

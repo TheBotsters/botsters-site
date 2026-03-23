@@ -1,0 +1,40 @@
+# typescript-ban-check.yml — Fail if PR adds .ts/.tsx files outside approved config paths
+# Approved: tsconfig.json (config only, no app code)
+# Policy: JS-first. No TypeScript in application code.
+name: typescript-ban-check
+
+on:
+  pull_request:
+
+jobs:
+  typescript-ban-check:
+    name: TypeScript ban (app code)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for new .ts/.tsx application code
+        run: |
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+
+          # Find added .ts/.tsx files
+          NEW_TS=$(git diff --name-only --diff-filter=A "$BASE" "$HEAD" \
+            | grep -E '\.(ts|tsx)$' \
+            | grep -v '^tsconfig' \
+            | grep -v '\.d\.ts$' \
+            || true)
+
+          if [ -n "$NEW_TS" ]; then
+            echo "::error::PR adds TypeScript application files — this project is JS-only."
+            echo ""
+            echo "New .ts/.tsx files found:"
+            echo "$NEW_TS"
+            echo ""
+            echo "Approved exceptions: tsconfig.json (config), *.d.ts (type declarations only)."
+            echo "Convert your changes to .js/.mjs/.astro."
+            exit 1
+          fi
+          echo "No new TypeScript application files — check passes."

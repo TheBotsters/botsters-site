@@ -1,0 +1,30 @@
+# dist-immutable-check.yml — Fail if PR modifies dist/ (dist is build output only)
+name: dist-immutable-check
+
+on:
+  pull_request:
+
+jobs:
+  dist-immutable-check:
+    name: dist/ immutability check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for dist/ modifications in PR
+        run: |
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD" | grep '^dist/' || true)
+          if [ -n "$CHANGED" ]; then
+            echo "::error::PR modifies files under dist/ — dist is build output only, never hand-edited."
+            echo ""
+            echo "Modified dist/ files:"
+            echo "$CHANGED"
+            echo ""
+            echo "If you need to update the site, modify sources in src/ and let CI rebuild."
+            exit 1
+          fi
+          echo "dist/ unchanged — check passes."
