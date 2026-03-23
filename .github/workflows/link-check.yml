@@ -29,13 +29,13 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           args: >
-            --base dist/
+            --root-dir ${{ github.workspace }}/dist
             --exclude 'mailto:'
             --exclude 'https://localhost'
             --exclude 'http://localhost'
             --timeout 20
             --max-retries 3
-            dist/**/*.html
+            ${{ github.workspace }}/dist/**/*.html
           fail: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
