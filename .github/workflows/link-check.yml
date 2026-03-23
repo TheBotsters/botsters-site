@@ -30,7 +30,7 @@ jobs:
         with:
           args: >
             --base dist/
-            --exclude-mail
+            --exclude 'mailto:'
             --exclude 'https://localhost'
             --exclude 'http://localhost'
             --timeout 20
