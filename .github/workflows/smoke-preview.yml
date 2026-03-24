@@ -25,6 +25,8 @@ jobs:
 
       - name: Build site
         run: npm run build
+        env:
+          PB_URL: https://cms-staging.botstersdev.com
 
       - name: Install serve
         run: npm install -g serve
