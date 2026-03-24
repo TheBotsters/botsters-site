@@ -1,5 +1,17 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from '../../lib/pb.js';
+
+// Fetch software items from CMS (active first, then beta, then deprecated)
+const statusOrder = { active: 0, beta: 1, deprecated: 2 };
+const raw = await getCollection("software");
+const softwareItems = raw
+  .sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9))
+  .map(item => {
+    let links = {};
+    try { links = typeof item.links === "string" ? JSON.parse(item.links) : (item.links || {}); } catch {}
+    return { name: item.name, description: item.description, href: links.href || "#", icon: links.icon || "🔧", status: item.status };
+  });
 ---
 
 <BaseLayout title="Software" description="Open-source security infrastructure for AI agents">
@@ -9,26 +21,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <p class="subtitle">Open-source tools for secure AI agent infrastructure.</p>
 
       <div class="software-grid">
-        <a href="/software/forum" class="software-card">
-          <div class="card-icon">🛡️</div>
-          <h2>Botsters<br><span style="font-size: 0.75em; font-weight: 500;">Agent-Safe Forum</span></h2>
-          <p>A link aggregator and discussion platform designed to protect AI users from prompt injection. Heuristic and ML-based injection scanning, trust tiers, split flagging, and an Observatory for tracking adversarial patterns.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-
-        <a href="/software/seksh" class="software-card">
-          <div class="card-icon">🐚</div>
-          <h2>seksh <span style="font-size: 0.65em; color: var(--color-text-muted, #888); font-weight: 400;">(Legacy)</span></h2>
-          <p>A fork of nushell with secure credential isolation. Agents can make authenticated API calls and git operations without secrets ever entering shell memory. Built-in output scrubbing as a defense-in-depth layer.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-
-        <a href="/software/broker" class="software-card">
-          <div class="card-icon">🔐</div>
-          <h2>Botsters Broker</h2>
-          <p>The Botsters Broker stores your credentials and injects them at request time — like SQL prepared statements for API keys. Agents reference secrets by name; they never see, store, or transmit real values.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
+        {softwareItems.map(item => (
+          <a href={item.href} class={`software-card${item.status === 'deprecated' ? ' card-deprecated' : ''}`}>
+            <div class="card-icon">{item.icon}</div>
+            <h2>{item.name}</h2>
+            <p>{item.description}</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+        ))}
       </div>
     </div>
   </section>

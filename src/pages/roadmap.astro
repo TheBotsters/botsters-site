@@ -1,67 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from '../lib/pb.js';
 
-// Roadmap data - matches broker-api-roadmap.md in seksbot-shared
-const brokerEndpoints = [
-  { name: 'POST /secrets/get', status: 'live', purpose: 'Fetch a secret value' },
-  { name: 'POST /secrets/list', status: 'live', purpose: 'List available secret names' },
-  { name: 'POST /proxy/request', status: 'live', purpose: 'Generic proxied HTTP with credential injection' },
-  { name: 'POST /api/s3/presign', status: 'progress', purpose: 'Generate presigned S3 URLs (no keys on disk)' },
-  { name: 'ALL /api/openai/*', status: 'live', purpose: 'Passthrough proxy to OpenAI' },
-  { name: 'ALL /api/anthropic/*', status: 'live', purpose: 'Passthrough proxy to Anthropic' },
-  { name: 'ALL /api/github/*', status: 'live', purpose: 'Passthrough proxy to GitHub' },
-  { name: 'ALL /api/notion/*', status: 'live', purpose: 'Passthrough proxy to Notion' },
-  { name: 'ALL /api/gemini/*', status: 'live', purpose: 'Passthrough proxy to Gemini' },
-  { name: 'ALL /api/cloudflare/*', status: 'live', purpose: 'Passthrough proxy to Cloudflare' },
-  { name: 'ALL /api/brave/*', status: 'live', purpose: 'Passthrough proxy to Brave' },
-  { name: 'ALL /api/aws/s3/*', status: 'live', purpose: 'S3 passthrough with SigV4 signing' },
-];
+// Fetch all roadmap records from CMS
+const allItems = await getCollection("roadmap", { sort: "section,order" });
 
-const agentToolCommands = [
-  { name: 'botster-http', status: 'live', purpose: 'HTTP requests with secret injection' },
-  { name: 'botster-git', status: 'live', purpose: 'Git operations with token injection' },
-  { name: 'listsecrets', status: 'live', purpose: 'List available secrets' },
-  { name: 'getsek (seksh legacy)', status: 'deprecated', purpose: 'Raw secret fetch (security risk) — seksh era, do not use' },
-];
+// Normalise CMS stage values to the template's expected status strings
+const stageMap = { shipped: "live", in_progress: "progress", planned: "planned", cancelled: "deprecated" };
+const norm = (item) => ({ ...item, status: stageMap[item.stage] || item.stage });
 
-const escapeHatches = [
-  { tool: 'flyctl', current: 'getsek → env var', needed: 'botster-fly or /api/fly/*' },
-  { tool: 'aws CLI', current: 'Not yet used', needed: 'botster-aws wrapped command' },
-  { tool: 'gh CLI', current: 'getsek or local PAT', needed: 'botster-gh wrapper' },
-  { tool: 'Gmail OAuth', current: 'Tokens in broker', needed: 'OAuth token refresh flow' },
-  { tool: 'wrangler', current: 'Local auth', needed: 'botster-wrangler or passthrough' },
-];
+const bySection = (sec) =>
+  allItems.filter(i => i.section === sec).map(norm).sort((a, b) => a.order - b.order);
 
-const planned = [
-  { priority: 'P0', items: [
-    { name: 'Tests for S3 presign endpoint', desc: 'SigV4 is fiddly, needs test coverage' },
-    { name: 'Merge s3-presign branch', desc: 'Deploy once tests pass' },
-    { name: 'Scoped secret stores', desc: 'Global + per-agent (eliminates AEONBYTE_ prefix hack)' },
-  ]},
-  { priority: 'P1', items: [
-    { name: 'botster-fly', desc: 'Wrapped command for flyctl operations' },
-    { name: 'botster-aws', desc: 'AWS CLI with credential injection' },
-    { name: '/api/fly/* passthrough', desc: 'Fly Machines API proxy in broker' },
-  ]},
-  { priority: 'P2', items: [
-    { name: 'botster-gh', desc: 'GitHub CLI wrapper' },
-    { name: 'botster-wrangler', desc: 'Cloudflare Wrangler CLI wrapper' },
-    { name: 'OAuth token refresh', desc: 'Broker-managed OAuth flows' },
-    { name: 'Secret rotation API', desc: 'Rotate keys without touching agent configs' },
-  ]},
-  { priority: 'P3', items: [
-    { name: 'Audit dashboard', desc: 'View broker logs (which agent used which secret)' },
-    { name: 'Rate limiting', desc: 'Per-agent, per-secret rate limits' },
-    { name: 'Secret expiry', desc: 'Auto-rotate or alert on aging credentials' },
-  ]},
-];
+const brokerEndpoints   = bySection("broker_endpoints").map(i => ({ name: i.title, status: i.status, purpose: i.description }));
+const agentToolCommands = bySection("agent_tools").map(i => ({ name: i.title, status: i.status, purpose: i.description }));
 
-const statusEmoji = {
-  live: '✅',
-  progress: '🔨',
-  planned: '📋',
-  deprecated: '⚠️',
-};
+// Escape hatches: description encoded as "Current: X | Needed: Y"
+const escapeHatches = bySection("escape_hatches").map(i => {
+  const parts = i.description.split(" | Needed: ");
+  return {
+    tool:    i.title,
+    current: (parts[0] || "").replace("Current: ", ""),
+    needed:  parts[1] || "",
+  };
+});
+
+// Planned work: group by priority field (P0, P1, P2, P3)
+const plannedRaw = bySection("planned_work");
+const priorities = [...new Set(plannedRaw.map(i => i.priority).filter(Boolean))].sort();
+const planned = priorities.map(p => ({
+  priority: p,
+  items: plannedRaw.filter(i => i.priority === p).map(i => ({ name: i.title, desc: i.description })),
+}));
+
+const statusEmoji = { live: "✅", progress: "🔨", planned: "📋", deprecated: "⚠️" };
 ---
 
 <BaseLayout title="Roadmap" description="Botsters agent tools roadmap">
